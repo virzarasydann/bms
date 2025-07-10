@@ -103,7 +103,7 @@
     </div>
 @endsection
 @push('scripts')
-    <script>
+    {{-- <script>
           $(document).ready(function() {
             $('.select-kategori').select2({
                 theme: "bootstrap4",
@@ -286,5 +286,5 @@
                 }
             });
         });
-    </script>
+    </script> --}}
 @endpush

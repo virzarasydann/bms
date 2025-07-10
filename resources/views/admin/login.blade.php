@@ -5,8 +5,8 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>Lazis</title>
-    <link rel="icon" href="{{ asset('images/icon.png') }}" type="image/png">
+    <title>BMS</title>
+    {{-- <link rel="icon" href="{{ asset('images/icon.png') }}" type="image/png"> --}}
 
     <!-- Google Font: Source Sans Pro -->
     <link rel="stylesheet"
@@ -81,10 +81,10 @@
 
 <body class="hold-transition overlay login-page">
     <div class="login-box p-5" style="background-color: #fff; border-radius: 20px;">
-            <div class=" text-center d-col items-center justify-content-center">
+            {{-- <div class=" text-center d-col items-center justify-content-center">
                 <img class="mb-2" src="{{ asset('images/logo.png') }}" alt="logo" width="120px" height="auto">
-                {{-- <h2 style="font-size: 25px; color: #242424;"><b>Login</b></h2> --}}
-            </div>
+                <h2 style="font-size: 25px; color: #242424;"><b>Login</b></h2>
+            </div> --}}
             <div class="card-body">
                 <form method="POST" action="{{ route('admin.loginPost') }}">
                     @csrf

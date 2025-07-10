@@ -17,8 +17,8 @@
                                 </span>
                                 <div>
                                     <p class="mb-1">Survey & Pengajuan disetujui</p>
-                                    <h4 class="mb-0" style="font-weight: 600"> {{ $jumlahSurvey }} /
-                                        {{ $jumlahPengajuan }}</h4>
+                                    {{-- <h4 class="mb-0" style="font-weight: 600"> {{ $jumlahSurvey }} /
+                                        {{ $jumlahPengajuan }}</h4> --}}
                                 </div>
                             </div>
                         </div>
@@ -33,7 +33,7 @@
                                 <div>
                                     <p class="mb-1">Saldo Bank</p>
                                     <h4 class="mb-0" style="font-weight: 600">Rp
-                                        {{ number_format($saldoBank, 0, ',', '.') }}</h4>
+                                        {{-- {{ number_format($saldoBank, 0, ',', '.') }}</h4> --}}
                                 </div>
                             </div>
                         </div>
@@ -48,7 +48,7 @@
                                 <div>
                                     <p class="mb-1">Saldo Tunai</p>
                                     <h4 class="mb-0" style="font-weight: 600">Rp
-                                        {{ number_format($saldoTunai, 0, ',', '.') }}</h4>
+                                        {{-- {{ number_format($saldoTunai, 0, ',', '.') }}</h4> --}}
                                 </div>
                             </div>
                         </div>
@@ -64,7 +64,7 @@
                                 <div>
                                     <p class="mb-1">Total Saldo</p>
                                     <h4 class="mb-0" style="font-weight: 600">Rp
-                                        {{ number_format($totalSaldo, 0, ',', '.') }}</h4>
+                                        {{-- {{ number_format($totalSaldo, 0, ',', '.') }}</h4> --}}
                                 </div>
                             </div>
                         </div>
@@ -117,7 +117,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach ($data as $item)
+                                {{-- @foreach ($data as $item)
                                     <tr>
                                         <td>{{ $item['no'] }}</td>
                                         <td>{{ $item['jenis_data'] }}</td>
@@ -147,11 +147,11 @@
                                         </td>
 
                                     </tr>
-                                @endforeach
+                                @endforeach --}}
                             </tbody>
                         </table>
 
-                        @foreach ($data as $item)
+                        {{-- @foreach ($data as $item)
                             <!-- Modal Detail -->
                             <div class="modal fade" id="modalDetail{{ $item['id'] }}" tabindex="-1" role="dialog"
                                 aria-labelledby="modalDetailLabel{{ $item['id'] }}" aria-hidden="true">
@@ -250,7 +250,7 @@
                                     </div>
                                 </div>
                             </div>
-                        @endforeach
+                        @endforeach --}}
 
 
                     </div>

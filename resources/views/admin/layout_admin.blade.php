@@ -4,8 +4,8 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Lazis</title>
-    <link rel="icon" href="{{ asset('images/icon.png') }}" type="image/png">
+    <title>BMS</title>
+    {{-- <link rel="icon" href="{{ asset('images/icon.png') }}" type="image/png"> --}}
 
 
     <meta name="csrf-token" content="{{ csrf_token() }}">
@@ -16,7 +16,8 @@
         href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fontawesome-iconpicker/3.2.0/css/fontawesome-iconpicker.min.css" />
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/fontawesome-iconpicker/3.2.0/css/fontawesome-iconpicker.min.css" />
     <!-- Ionicons -->
     <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
     <!-- Tempusdominus Bootstrap 4 -->
@@ -46,38 +47,39 @@
     <link rel="stylesheet" href="{{ asset('templates/plugins/select2/css/select2.min.css') }}">
     <link rel="stylesheet" href="{{ asset('templates/plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css') }}">
     <style>
-    .select2-container .select2-selection--single {
-        height: 38px;
-        border: 1px solid #ced4da;
-        border-radius: 0.25rem;
-        padding: 6px 12px;
-        font-size: 1rem;
-        background-color: #fff;
-    }
+        .select2-container .select2-selection--single {
+            height: 38px;
+            border: 1px solid #ced4da;
+            border-radius: 0.25rem;
+            padding: 6px 12px;
+            font-size: 1rem;
+            background-color: #fff;
+        }
 
-    .select2-container .select2-selection__arrow {
-        display: none;
-    }
+        .select2-container .select2-selection__arrow {
+            display: none;
+        }
 
-    .select2-container .select2-selection--single:focus {
-        outline: none;
-    }
+        .select2-container .select2-selection--single:focus {
+            outline: none;
+        }
 
-    .select2-container .select2-selection__rendered {
-        line-height: 30px;
-    }
-    .select2-container--bootstrap4 .select2-selection--single {
-    height: calc(2.25rem + 2px);
-    padding: 0.375rem 0.75rem;
-    display: flex;
-    align-items: center;
-    }
+        .select2-container .select2-selection__rendered {
+            line-height: 30px;
+        }
 
-    .select2-container--bootstrap4 .select2-selection--single .select2-selection__rendered {
-    line-height: normal !important;
-    padding-left: 0 !important;
-    }
-</style>
+        .select2-container--bootstrap4 .select2-selection--single {
+            height: calc(2.25rem + 2px);
+            padding: 0.375rem 0.75rem;
+            display: flex;
+            align-items: center;
+        }
+
+        .select2-container--bootstrap4 .select2-selection--single .select2-selection__rendered {
+            line-height: normal !important;
+            padding-left: 0 !important;
+        }
+    </style>
 
 
 </head>
@@ -90,7 +92,7 @@
 
 
         <!-- Navbar -->
-        <nav class="main-header navbar navbar-expand navbar-light" style="background-color: #c02222">
+        <nav class="main-header navbar navbar-expand navbar-light" style="background-color: #28a745">
             <!-- Left navbar links: Tanda Panah Kembali -->
             <ul class="navbar-nav d-flex align-items-center" style="margin-left: 5px;">
                 <li class="nav-item">
@@ -101,20 +103,22 @@
             </ul>
 
             <!-- Right navbar links -->
-           <ul class="navbar-nav ml-auto mr-3 d-flex align-items-center">
-            <!-- User Profile Dropdown -->
-            <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle d-flex align-items-center gap-2 text-white" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    <img src="{{ asset('images/icon.png') }}"  width="30px" class="me-2">
-                    <span class="text-white ml-2">{{ Auth::user()->username }}</span>
-                </a>
-                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
-                    <a class="dropdown-item" href="#" onclick="logoutConfirm(event)">
-                        <i class="fas fa-sign-out-alt mr-2"></i> Logout
+            <ul class="navbar-nav ml-auto mr-3 d-flex align-items-center">
+                <!-- User Profile Dropdown -->
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle d-flex align-items-center gap-2 text-white" href="#"
+                        id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true"
+                        aria-expanded="false">
+                        {{-- <img src="{{ asset('images/icon.png') }}" width="30px" class="me-2"> --}}
+                        <span class="text-white ml-2">{{ Auth::user()->username }}</span>
                     </a>
-                </div>
-            </li>
-        </ul>
+                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
+                        <a class="dropdown-item" href="#" onclick="logoutConfirm(event)">
+                            <i class="fas fa-sign-out-alt mr-2"></i> Logout
+                        </a>
+                    </div>
+                </li>
+            </ul>
 
         </nav>
 
@@ -125,14 +129,14 @@
         <!-- Main Sidebar Container -->
         <aside class="main-sidebar sidebar-dark-primary elevation-4">
 
-            <a href="#" class="brand-link d-flex flex-column align-items-center justify-content-center text-center py-2" style="text-decoration: none;">
-                <img src="{{ asset('images/logo.png') }}"
-                    alt="Logo Website"
-                    class="brand-image">
+            <a href="#"
+                class="brand-link d-flex flex-column align-items-center justify-content-center text-center py-2"
+                style="text-decoration: none;">
+                {{-- <img src="{{ asset('images/logo.png') }}" alt="Logo Website" class="brand-image"> --}}
 
 
                 <span class="brand-text font-weight-light d-block">
-                    {{-- <strong>Lazis</strong> --}}
+                    <strong>BMS</strong>
                 </span>
             </a>
 
@@ -217,7 +221,7 @@
         <!-- /.content-wrapper -->
 
         <footer class="main-footer">
-            <strong>Copyright &copy; {{ date('Y') }} <a href="#" class="text-gray">LAZIS AN NASA'I</a>.</strong>
+            <strong>Copyright &copy; {{ date('Y') }} <a href="#" class="text-gray">BMS</a>.</strong>
         </footer>
 
         <!-- Control Sidebar -->
@@ -288,7 +292,8 @@
     <!-- Summernote -->
     <script src="{{ asset('templates/plugins/summernote/summernote-bs4.min.js') }}"></script>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/fontawesome-iconpicker/3.2.0/js/fontawesome-iconpicker.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fontawesome-iconpicker/3.2.0/js/fontawesome-iconpicker.min.js">
+    </script>
 
 
     <!-- Page specific script -->
