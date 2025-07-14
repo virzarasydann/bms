@@ -10,6 +10,15 @@ use App\Http\Controllers\KategoriProjectController;
 use App\Http\Controllers\KategoriSewaController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\SewaController;
+use App\Http\Controllers\HelpDeskController;
+use App\Http\Controllers\BankController;
+use App\Http\Controllers\KategoriTransaksiController;
+use App\Http\Controllers\PemasukanController;
+use App\Http\Controllers\PiutangController;
+use App\Http\Controllers\PengeluaranController;
+use App\Http\Controllers\HutangController;
+use App\Http\Controllers\MutasiSaldoController;
+
 
 Route::get('/', function () {
     if (Auth::check()) {
@@ -38,77 +47,14 @@ Route::middleware('auth')->prefix('admin')->group(function () {
     Route::resource('kategoriProject', KategoriProjectController::class);
     Route::resource('project', ProjectController::class);
     Route::resource('sewa', SewaController::class);
-
-    //     Route::resource('mustahik', MustahikController::class);
-    //     Route::resource('donatur', DonaturController::class);
-    
-    
-    
-    //     Route::controller(LaporanJurnalController::class)->group(function () {
-            
-    //     Route::get('admin/laporanJurnal/export-pdf', [LaporanJurnalController::class, 'exportPdf'])->name('laporanJurnal.exportPdf');
-    //     Route::get('admin/laporanJurnal/export-excel', [LaporanJurnalController::class, 'exportExcel'])->name('laporanJurnal.exportExcel');
-            
-    //     });
-    //     Route::resource('laporanJurnal', LaporanJurnalController::class);
-
-    //     Route::controller(LaporanKeuanganController::class)->group(function () {
-    //         Route::get('laporanKeuangan/showJenis', [LaporanKeuanganController::class, 'showJenis'])
-    //     ->name('laporanKeuangan.showJenis');
-    //     Route::get('admin/laporanKeuangan/export-pdf', [LaporanKeuanganController::class, 'exportPdf'])->name('laporanKeuangan.exportPdf');
-    // Route::get('admin/laporanKeuangan/export-excel', [LaporanKeuanganController::class, 'exportExcel'])->name('laporanKeuangan.exportExcel');
-            
-    //     });
-    //     Route::resource('laporanKeuangan', LaporanKeuanganController::class);
-
-    //      Route::controller(DonasiBarangController::class)->group(function () {
-    //         Route::post('penyaluran', 'store')->name('penyaluran.store');
-    //         Route::get('penerimaan/list', 'getPenerima')->name('penerimaan.list');
-    //         Route::get('donasiBarang/{id}/penyaluran', 'penyaluran') ->name('donasiBarang.penyaluran');
-    //          Route::get('donasiBarang/donatur', 'getDonatur')->name('donaturList');
-    //          Route::resource('donasiBarang', DonasiBarangController::class);
-    //     });
-
-
-    //     Route::controller(PenerimaanController::class)->group(function () {
-    //         Route::get('penerimaan/cetak/{id}', 'cetakKwitansi')->name('cetak-kwitansi-masuk');
-    //         Route::get('penerimaan/penomoran', 'showNoTransaksi')->name('penerimaan.penomoran');
-    //         Route::get('penerimaan/cetak-penerimaan', 'cetak')->name('cetak-pemasukan');
-    //         Route::get('kategori-penerimaan/list', 'getKategoriPenerimaan')->name('kategori.penerimaan.list');
-    //         Route::get('penerimaan/search',  'getDonatur')->name('penerimaan.search');
-    //         Route::resource('penerimaan', PenerimaanController::class);
-    //     });
-
-
-    //     Route::controller(PengeluaranController::class)->group(function () {
-    //         Route::post('/pengeluaran/detail/update', 'updateDetail')->name('pengeluaran.detail.update');
-    //         Route::post('/pengeluaran/sumber/update',  'updateSumber')->name('pengeluaran.sumber.update');
-    //         Route::get('pengeluaran/cetak/{id}', 'cetakKwitansi')->name('cetak-kwitansi');
-    //         Route::get('pengeluaran/penomoran', 'showNoPengeluaran')->name('penomoran');
-    //         Route::get('pengeluaran/cetak-pengeluaran', 'cetak')->name('cetak-pengeluaran');
-    //         Route::get('pengeluaran/list-pemasukan', 'getKategoriPemasukan')->name('kategori-pemasukan.list');
-    //         Route::get('kategori-pengeluaran/list', 'getKategoriPengeluaran')->name('kategori.pengeluaran.list');
-    //         Route::get('pengeluaran/search',  'getMustahik')->name('pengeluaran.search');
-    //         Route::resource('pengeluaran', PengeluaranController::class);
-    //     });
-
-    //     Route::controller(PengajuanController::class)->group(function () {
-    //         Route::get('survey/penomoran', 'showNoSurvey')->name('survey.penomoran');
-    //         Route::get('pengajuan/penomoran', 'showNoPengajuan')->name('pengajuan.penomoran');
-    //         Route::get('pengajuan/cetak-form/{id}', 'cetak')->name('cetak-survey');
-    //         Route::post('pengajuan/{id}/survey', 'storeSurvey')->name('pengajuan.storeSurvey');
-    //         Route::get('pengajuan/{id}/survey',  'survey')->name('pengajuan.survey');
-    //         Route::resource('pengajuan', PengajuanController::class);
-    //     });
-
-    //         Route::resource('tutupBuku', TutupBukuController::class);
-
-
-    //     Route::resource('kategoriPemasukan', KategoriPemasukanController::class);
-    //     Route::resource('kategoriPengeluaran', KategoriPengeluaranController::class);
-
-
-
+    Route::resource('helpdesk', HelpDeskController::class);
+    Route::resource('bank', BankController::class);
+    Route::resource('kategoriTransaksi', KategoriTransaksiController::class);
+    Route::resource('pemasukan', PemasukanController::class);
+    Route::resource('piutang', PiutangController::class);
+    Route::resource('pengeluaran', PengeluaranController::class);
+    Route::resource('hutang', HutangController::class);
+    Route::resource('mutasi', MutasiSaldoController::class);
 
 
     Route::post('admin/logout', [AuthController::class, 'logout'])->name('admin.logout');

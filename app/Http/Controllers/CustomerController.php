@@ -54,7 +54,7 @@ class CustomerController extends Controller
                 ->make(true);
         }
 
-        return view('admin.customer.index', compact('permissions'));
+        return view('admin.master_data.customer.index', compact('permissions'));
     }
 
 

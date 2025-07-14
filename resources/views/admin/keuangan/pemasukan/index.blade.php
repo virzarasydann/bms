@@ -12,16 +12,16 @@
             <div class="container-fluid">
                 <div class="row">
                     <div class="col-12">
-                        <h1 class="text-xl mb-3">Data Project</h1>
+                        <h1 class="text-xl mb-3">Data Pemasukan</h1>
                         <div class="card">
                             <div class="card-header p-3">
                                 <div class="d-flex align-content-center justify-content-between">
-                                    <h3 class="font-weight-medium text-lg">Data Project</h3>
+                                    <h3 class="font-weight-medium text-lg">Data Pemasukan</h3>
                                     <div class="d-flex align-items-center" style="gap: 3px">
                                         @if ($permissions['tambah'])
                                             <button class="btn btn-primary btn-sm" data-toggle="modal"
                                                 data-target="#modalForm"><i class="fas fa-plus"></i>
-                                                Tambah Project</button>
+                                                Tambah Pemasukan</button>
                                         @endif
 
                                         <button type="button" class="btn border px-3 py-1 btn-xs" onclick="reloadTable()">
@@ -36,12 +36,15 @@
                                     <thead>
                                         <tr>
                                             <th>No</th>
-                                            <th>Nama Project</th>
-                                            <th>Customer</th>
-                                            <th>Tanggal Kontrak</th>
-                                            <th>Tanggal Selesai</th>
-                                            <th>Penanggung Jawab</th>
-                                            <th>Status Pembayaran</th>
+                                            <th>Tanggal</th>
+                                            <th>Nominal</th>
+                                            <th>Kategori</th>
+                                            <th>Rekening</th>
+                                            <th>Lampiran</th>
+                                        
+
+                                        
+                                            
                                             <th width="100px">Action</th>
                                         </tr>
                                     </thead>
@@ -78,84 +81,86 @@
                     <input type="hidden" id="primary_id" name="primary_id">
                     <div class="modal-body">
 
+                       
                         <div class="form-group row mb-3">
-                            <label for="tgl_kontrak" class="col-sm-4 col-form-label">Tanggal Kontrak</label>
-                            <div class="col-sm-3">
-                                <input type="date" id="tgl_kontrak" class="form-control" name="tgl_kontrak"
+                            <label for="tanggal" class="col-sm-4 col-form-label">Tanggal Pemasukan</label>
+                            <div class="col-sm-8">
+                                <input type="date" class="form-control" id="tanggal" name="tanggal"
                                     value="{{ \Carbon\Carbon::now()->format('Y-m-d') }}">
                             </div>
                         </div>
 
+
                         <div class="form-group row mb-3">
-                            <label for="nama_project" class="col-sm-4 col-form-label">Nama Project</label>
+                            <label for="id_bank" class="col-sm-4 col-form-label">Rekening</label>
                             <div class="col-sm-8">
-                                <input type="text" id="nama_project" class="form-control" name="nama_project">
+                                <select class="form-control select2" id="id_bank" name="id_bank">
+                                    <option value="">-- Pilih Rekening --</option>
+                                    @foreach ($dataBank as $bank)
+                                        <option value="{{ $bank->id }}">{{ $bank->nama_bank }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+
+
+                        
+                    
+                        <div class="form-group row mb-3">
+                            <label for="nominal" class="col-sm-4 col-form-label">Nominal</label>
+                            <div class="col-sm-8">
+                                <div class="input-group">
+                                    <span class="input-group-text">Rp.</span>
+                                    <input type="text" class="form-control" id="nominal" name="nominal"
+                                        oninput="formatRupiah(this)">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group row mb-3">
+                            <label for="lampiran" class="col-sm-4 col-form-label">Lampiran</label>
+                            <div class="col-sm-8">
+                                <input type="file" class="form-control" id="lampiran" name="lampiran"
+                                    accept=".jpg,.jpeg,.png,.pdf">
+                                <div class="d-flex gap-1 mt-1 align-items-center small">
+                                    <div id="lihat-lampiran-wrapper" class="d-none">
+                                        <a href="#" target="_blank" id="lihat-lampiran" class="text-primary">Lihat
+                                            Lampiran</a>
+                                        <span class="text-dark">|</span>
+                                    </div>
+                                    <small class="text-danger">Max. 2MB (.jpg, .png, .jpeg, .pdf)</small>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group row mb-3">
+                            <label for="keterangan" class="col-sm-4 col-form-label">Keterangan</label>
+                            <div class="col-sm-8">
+                                <input type="text" id="keterangan" class="form-control" name="keterangan">
                             </div>
                         </div>
 
 
                         <div class="form-group row mb-3">
-                            <label for="id_kategori_project" class="col-sm-4 col-form-label">Kategori Project</label>
+                            <label for="id_kategori_transaksi" class="col-sm-4 col-form-label">Kategori Transaksi</label>
                             <div class="col-sm-8">
-                                <select class="form-control select2" id="id_kategori_project" name="id_kategori_project">
-                                    <option value="">-- Pilih Kategori --</option>
+                                <select class="form-control select2" id="id_kategori_transaksi" name="id_kategori_transaksi">
+                                    <option value="">-- Pilih Rekening --</option>
                                     @foreach ($dataKategori as $kategori)
-                                        <option value="{{ $kategori->id }}">{{ $kategori->kategori }}</option>
+                                        <option value="{{ $kategori->id }}" data-nama="{{ $kategori->nama_kategori }}">{{ $kategori->nama_kategori }}</option>
                                     @endforeach
                                 </select>
                             </div>
+
+                            
+
                         </div>
 
+                        <div id="wrapper-select-piutang"></div>
 
 
-                        <div class="form-group row mb-3">
-                            <label for="id_customer" class="col-sm-4 col-form-label">Customer</label>
-                            <div class="col-sm-8">
-                                <select class="form-control select2" id="id_customer" name="id_customer">
-                                    <option value="">-- Pilih Customer --</option>
-                                    @foreach ($dataCustomer as $customer)
-                                        <option value="{{ $customer->id }}">{{ $customer->nama }}</option>
-                                    @endforeach
-                                </select>
-                            </div>
-                        </div>
-
-                        <div class="form-group row mb-3">
-                            <label for="nilai_project" class="col-sm-4 col-form-label">Nilai Project</label>
-                            <div class="col-sm-8">
-                                <input type="text" id="nilai_project" class="form-control" name="nilai_project">
-                            </div>
-                        </div>
-
-                        <div class="form-group row mb-3">
-                            <label for="penanggung_jawab" class="col-sm-4 col-form-label">Penanggung Jawab</label>
-                            <div class="col-sm-8">
-                                <input type="text" id="penanggung_jawab" class="form-control" name="penanggung_jawab">
-                            </div>
-                        </div>
 
 
-                        <div class="form-group row mb-3">
-                            <label for="status_pembayaran" class="col-sm-4 col-form-label">Status Pembayaran</label>
-                            <div class="col-sm-8">
-                                <select class="form-control" id="status_pembayaran" name="status_pembayaran">
-
-
-                                    <option value="Paid">Paid</option>
-                                    <option value="Unpaid">Unpaid</option>
-                                    <option value="Pending">Pending</option>
-
-                                </select>
-                            </div>
-                        </div>
-
-                        <div class="form-group row mb-3">
-                            <label for="tanggal_selesai" class="col-sm-4 col-form-label">Tanggal Selesai</label>
-                            <div class="col-sm-3">
-                                <input type="date" id="tanggal_selesai" class="form-control" name="tanggal_selesai"
-                                    value="{{ \Carbon\Carbon::now()->format('Y-m-d') }}">
-                            </div>
-                        </div>
+                        
                     </div>
 
                     <div class="modal-footer">
@@ -169,13 +174,12 @@
 @endsection
 @push('scripts')
     <script>
-        
         window.permissions = @json($permissions);
         window.routes = {
-            store: "{{ route('project.store') }}",
-            update: "{{ route('project.update', ['project' => ':id']) }}",
-            index: "{{ route('project.index') }}"
+            index: "{{ route('pemasukan.index') }}",
+            store: "{{ route('pemasukan.store') }}",
+            update: "{{ route('pemasukan.update', ['pemasukan' => ':id']) }}",
         };
     </script>
-    <script src="{{ asset('js/admin/project.js') }}"></script>
+    <script src="{{ asset('js/admin/pemasukan.js') }}"></script>
 @endpush

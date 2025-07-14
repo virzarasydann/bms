@@ -52,7 +52,7 @@ public function index(Request $request)
                 ->make(true);
         }
 
-        return view('admin.kategori_project.index', compact('permissions'));
+        return view('admin.master_data.kategori_project.index', compact('permissions'));
     }
 
 

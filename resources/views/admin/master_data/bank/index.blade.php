@@ -12,16 +12,16 @@
             <div class="container-fluid">
                 <div class="row">
                     <div class="col-12">
-                        <h1 class="text-xl mb-3">Data Sewa</h1>
+                        <h1 class="text-xl mb-3">Data Bank</h1>
                         <div class="card">
                             <div class="card-header p-3">
                                 <div class="d-flex align-content-center justify-content-between">
-                                    <h3 class="font-weight-medium text-lg">Data Sewa</h3>
+                                    <h3 class="font-weight-medium text-lg">Data Bank</h3>
                                     <div class="d-flex align-items-center" style="gap: 3px">
                                         @if ($permissions['tambah'])
                                             <button class="btn btn-primary btn-sm" data-toggle="modal"
                                                 data-target="#modalForm"><i class="fas fa-plus"></i>
-                                                Tambah Sewa</button>
+                                                Tambah Bank</button>
                                         @endif
 
                                         <button type="button" class="btn border px-3 py-1 btn-xs" onclick="reloadTable()">
@@ -36,14 +36,13 @@
                                     <thead>
                                         <tr>
                                             <th>No</th>
-                                            <th>Kategori Sewa</th>
-                                            <th>Nama Layanan</th>
-                                            <th>Email</th>
+                                            <th>Nama Bank</th>
+                                            <th>No Rekening</th>
+                                            <th>Pemilik</th>
+
+                                        
                                             
-                                            <th>Tanggal Sewa</th>
-                                            <th>Tanggal Expired</th>
-                                            <th>Vendor</th>
-                                            <th width="50px">Action</th>
+                                            <th width="100px">Action</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -79,72 +78,41 @@
                     <input type="hidden" id="primary_id" name="primary_id">
                     <div class="modal-body">
 
-                        <div class="form-group row mb-3">
-                            <label for="tgl_sewa" class="col-sm-4 col-form-label">Tanggal Sewa</label>
-                            <div class="col-sm-3">
-                                <input type="date" id="tgl_sewa" class="form-control" name="tgl_sewa"
-                                    value="{{ \Carbon\Carbon::now()->format('Y-m-d') }}">
-                            </div>
-                        </div>
+                       
 
                         <div class="form-group row mb-3">
-                            <label for="nama_layanan" class="col-sm-4 col-form-label">Nama Layanan</label>
+                            <label for="nama_bank" class="col-sm-4 col-form-label">Nama Bank</label>
                             <div class="col-sm-8">
-                                <input type="text" id="nama_layanan" class="form-control" name="nama_layanan">
+                                <input type="text" id="nama_bank" class="form-control" name="nama_bank">
                             </div>
                         </div>
 
 
                         <div class="form-group row mb-3">
-                            <label for="email" class="col-sm-4 col-form-label">Email</label>
+                            <label for="no_rekening" class="col-sm-4 col-form-label">No Rekening</label>
                             <div class="col-sm-8">
-                                <input type="text" id="email" class="form-control" name="email">
+                                <input type="text" id="no_rekening" class="form-control" name="no_rekening">
                             </div>
                         </div>
 
+                    
+
                         <div class="form-group row mb-3">
-                            <label for="password" class="col-sm-4 col-form-label">Password</label>
+                            <label for="pemilik" class="col-sm-4 col-form-label">Pemilik</label>
                             <div class="col-sm-8">
-                                <input type="text" id="password" class="form-control" name="password">
-                            </div>
-                        </div>
-
-                        <div class="form-group row mb-3">
-                            <label for="id_kategori_sewa" class="col-sm-4 col-form-label">Kategori Sewa</label>
-                            <div class="col-sm-8">
-                                <select class="form-control select2" id="id_kategori_sewa" name="id_kategori_sewa">
-                                    <option value="">-- Pilih Kategori --</option>
-                                    @foreach ($dataKategori as $kategori)
-                                        <option value="{{ $kategori->id }}">{{ $kategori->jenis_sewa }}</option>
-                                    @endforeach
-                                </select>
-                            </div>
-                        </div>
-
-                        <div class="form-group row mb-3">
-                            <label for="vendor" class="col-sm-4 col-form-label">Vendor</label>
-                            <div class="col-sm-8">
-                                <input type="text" id="vendor" class="form-control" name="vendor">
-                            </div>
-                        </div>
-
-                        <div class="form-group row mb-3">
-                            <label for="url_vendor" class="col-sm-4 col-form-label">URL Vendor</label>
-                            <div class="col-sm-8">
-                                <input type="text" id="url_vendor" class="form-control" name="url_vendor">
+                                <input type="text" id="pemilik" class="form-control"
+                                    name="pemilik">
                             </div>
                         </div>
 
 
 
 
-                        <div class="form-group row mb-3">
-                            <label for="tgl_expired" class="col-sm-4 col-form-label">Tanggal Expired</label>
-                            <div class="col-sm-3">
-                                <input type="date" id="tgl_expired" class="form-control" name="tgl_expired"
-                                    value="{{ \Carbon\Carbon::now()->format('Y-m-d') }}">
-                            </div>
-                        </div>
+
+
+
+
+                        
                     </div>
 
                     <div class="modal-footer">
@@ -160,10 +128,10 @@
     <script>
         window.permissions = @json($permissions);
         window.routes = {
-            index: "{{ route('sewa.index') }}",
-            store: "{{ route('sewa.store') }}",
-            update: "{{ route('sewa.update', ['sewa' => ':id']) }}",
+            index: "{{ route('bank.index') }}",
+            store: "{{ route('bank.store') }}",
+            update: "{{ route('bank.update', ['bank' => ':id']) }}",
         };
     </script>
-    <script src="{{ asset('js/admin/sewa.js') }}"></script>
+    <script src="{{ asset('js/admin/bank.js') }}"></script>
 @endpush

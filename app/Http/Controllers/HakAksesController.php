@@ -18,7 +18,7 @@ class HakAksesController extends Controller
 
         $users = User::select('id', 'username')->get();
 
-        return view('admin.hak_akses.index', compact('users', 'permissions'));
+        return view('admin.pengaturan.hak_akses.index', compact('users', 'permissions'));
     }
 
     public static function getUserPermissions()

@@ -1,4 +1,4 @@
-class SewaModule {
+class PemasukanApp {
     constructor() {
         this.table = null;
         this.audio = new Audio('/audio/notification.ogg');
@@ -8,47 +8,68 @@ class SewaModule {
 
     init() {
         this.initDataTable();
-        this.initSelect2();
         this.handleFormSubmit();
         this.handleEdit();
         this.handleDelete();
-        this.resetModal();
+        this.resetFormOnModalClose();
+        this.handleKategoriTransaksiChange();
+
+        $('.select2').select2({ theme: 'bootstrap4', placeholder: '-- Pilih --', allowClear: false,  dropdownParent: $('#modalForm')});
     }
 
-    initSelect2() {
-        $('.select2').select2({
-            theme: 'bootstrap4',
-            placeholder: '-- Pilih --',
-            allowClear: false,
-            dropdownParent: $('#modalForm')
+    handleKategoriTransaksiChange() {
+        $('#id_kategori_transaksi').on('change', function () {
+            const selected = $(this).find('option:selected').data('nama');
+            
+            if (selected === 'Pembayaran Piutang') {
+                // Tambahkan select baru kalau belum ada
+                if (!$('#id_piutang').length) {
+                    const html = `
+                        <div class="form-group row mb-3" id="wrapper-piutang">
+                            <label for="id_piutang" class="col-sm-4 col-form-label">Pilih Piutang</label>
+                            <div class="col-sm-8">
+                                <select class="form-control select2" id="id_piutang" name="id_piutang">
+                                    <option value="">-- Pilih Piutang --</option>
+                                    
+                                </select>
+                            </div>
+                        </div>
+                    `;
+                    $('#wrapper-select-piutang').html(html);
+                    $('.select2').select2({ theme: 'bootstrap4' });
+                }
+            } else {
+                // Hapus jika bukan Pembayaran Piutang
+                $('#wrapper-select-piutang').empty();
+            }
         });
     }
-
+    
     initDataTable() {
+        const showAction = this.permissions.edit || this.permissions.hapus;
         this.table = $('.data-table').DataTable({
             processing: true,
             serverSide: true,
-            responsive: true,
-            
             ajax: window.routes.index,
-            ordering: false,
             columns: [
                 { data: 'DT_RowIndex', orderable: false, searchable: false },
-                { data: 'kategori', name: 'kategori.jenis_sewa' },
-                { data: 'nama_layanan' },
-                { data: 'email' },
-                { data: 'tgl_sewa' },
-                { data: 'tgl_expired' },
-                { data: 'vendor' },
-                { data: 'action', orderable: false, searchable: false }
+                { data: 'tanggal' },
+                { data: 'nominal' },
+                { data: 'kategori', name: 'kategoriTransaksi.nama_kategori' },
+                { data: 'bank', name: 'bank.nama_bank' },
+                { data: 'keterangan' },
+                { data: 'action', orderable: false, searchable: false },
             ]
         });
+    }
+
+    reloadTable() {
+        this.table.ajax.reload();
     }
 
     handleFormSubmit() {
         $('#formData').on('submit', (e) => {
             e.preventDefault();
-
             const id = $('#primary_id').val();
             const url = id ? window.routes.update.replace(':id', id) : window.routes.store;
             const method = id ? 'PUT' : 'POST';
@@ -73,23 +94,24 @@ class SewaModule {
                         timeOut: 3500,
                         positionClass: "toast-bottom-right",
                     });
-                    this.table.ajax.reload();
+                    this.reloadTable();
                 },
                 error: (xhr) => {
-                    this.audio.play();
-                    toastr.error("Ada inputan yang salah!", "GAGAL!", {
-                        progressBar: true,
-                        timeOut: 3500,
-                        positionClass: "toast-bottom-right",
-                    });
-
-                    const errors = xhr.responseJSON.errors;
-                    $.each(errors, function (key, val) {
-                        const input = $('#' + key);
-                        input.addClass('is-invalid');
-                        input.parent().find('.invalid-feedback').remove();
-                        input.parent().append(`<span class="invalid-feedback" role="alert"><strong>${val[0]}</strong></span>`);
-                    });
+                    if (xhr.status === 422) {
+                        this.audio.play();
+                        toastr.error("Ada inputan yang salah!", "GAGAL!", {
+                            progressBar: true,
+                            timeOut: 3500,
+                            positionClass: "toast-bottom-right",
+                        });
+                        const errors = xhr.responseJSON.errors;
+                        $.each(errors, function (key, val) {
+                            const input = $('#' + key);
+                            input.addClass('is-invalid');
+                            input.parent().find('.invalid-feedback').remove();
+                            input.parent().append('<span class="invalid-feedback"><strong>' + val[0] + '</strong></span>');
+                        });
+                    }
                 }
             });
         });
@@ -98,28 +120,24 @@ class SewaModule {
     handleEdit() {
         $(document).on('click', '#edit-button', function () {
             const url = $(this).data('url');
-
-            $.get(url, (res) => {
+            $.get(url, function (res) {
                 if (res.status === 'success') {
-                    const d = res.data;
-                    $('#primary_id').val(d.id);
-                    $('#id_kategori_sewa').val(d.id_kategori_sewa).trigger('change');
-                    $('#nama_layanan').val(d.nama_layanan);
-                    $('#email').val(d.email);
-                    $('#password').val(d.password);
-                    $('#tgl_sewa').val(d.tgl_sewa);
-                    $('#tgl_expired').val(d.tgl_expired);
-                    $('#vendor').val(d.vendor);
-                    $('#url_vendor').val(d.url_vendor);
+                    const data = res.data;
+                    $('#primary_id').val(data.id);
+                    $('#tanggal').val(data.tanggal);
+                    $('#id_bank').val(data.id_bank).trigger('change');
+                    $('#id_kategori_transaksi').val(data.id_kategori_transaksi).trigger('change');
+                    $('#nominal').val(data.nominal);
+                    $('#keterangan').val(data.keterangan);
                 }
             });
         });
     }
 
     handleDelete() {
-        $(document).on('click', '.delete-button', function (e) {
+        $(document).on('click', '.delete-button', (e) => {
             e.preventDefault();
-            const form = $(this).closest('form');
+            const form = $(e.currentTarget).closest('form');
 
             Swal.fire({
                 title: 'Apakah Anda yakin?',
@@ -140,7 +158,7 @@ class SewaModule {
                                 timeOut: 3500,
                                 positionClass: "toast-bottom-right",
                             });
-                            this.table.ajax.reload();
+                            this.reloadTable();
                         },
                         error: () => {
                             toastr.error("Gagal menghapus data.", "GAGAL!", {
@@ -155,7 +173,7 @@ class SewaModule {
         });
     }
 
-    resetModal() {
+    resetFormOnModalClose() {
         $('#modalForm').on('hidden.bs.modal', function () {
             $('#formData')[0].reset();
             $('#primary_id').val('');
@@ -167,5 +185,5 @@ class SewaModule {
 }
 
 $(document).ready(() => {
-    window.SewaApp = new SewaModule();
+    window.PemasukanApp = new PemasukanApp();
 });

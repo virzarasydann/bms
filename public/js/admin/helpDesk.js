@@ -1,4 +1,4 @@
-class SewaModule {
+class HelpDeskModule {
     constructor() {
         this.table = null;
         this.audio = new Audio('/audio/notification.ogg');
@@ -12,12 +12,12 @@ class SewaModule {
         this.handleFormSubmit();
         this.handleEdit();
         this.handleDelete();
-        this.resetModal();
+        this.resetModalOnClose();
     }
 
     initSelect2() {
         $('.select2').select2({
-            theme: 'bootstrap4',
+            theme: "bootstrap4",
             placeholder: '-- Pilih --',
             allowClear: false,
             dropdownParent: $('#modalForm')
@@ -29,26 +29,30 @@ class SewaModule {
             processing: true,
             serverSide: true,
             responsive: true,
-            
-            ajax: window.routes.index,
             ordering: false,
+            ajax: window.routes.index,
             columns: [
                 { data: 'DT_RowIndex', orderable: false, searchable: false },
-                { data: 'kategori', name: 'kategori.jenis_sewa' },
-                { data: 'nama_layanan' },
-                { data: 'email' },
-                { data: 'tgl_sewa' },
-                { data: 'tgl_expired' },
-                { data: 'vendor' },
+                { data: 'project', name: 'project.nama_project' },
+                { data: 'tgl_komplen' },
+                { data: 'tgl_target_selesai' },
+                { data: 'deskripsi_komplen' },
+                { data: 'penanggung_jawab' },
+                { data: 'status_komplen' },
                 { data: 'action', orderable: false, searchable: false }
             ]
         });
     }
 
-    handleFormSubmit() {
-        $('#formData').on('submit', (e) => {
-            e.preventDefault();
+    reloadTable() {
+        this.table.ajax.reload();
+    }
 
+    handleFormSubmit() {
+
+        $('#formData').on('submit', (e) => {
+            const self = this;
+            e.preventDefault();
             const id = $('#primary_id').val();
             const url = id ? window.routes.update.replace(':id', id) : window.routes.store;
             const method = id ? 'PUT' : 'POST';
@@ -60,7 +64,7 @@ class SewaModule {
             formData.append('_method', method);
 
             $.ajax({
-                url,
+                url: url,
                 method: 'POST',
                 data: formData,
                 contentType: false,
@@ -73,23 +77,25 @@ class SewaModule {
                         timeOut: 3500,
                         positionClass: "toast-bottom-right",
                     });
-                    this.table.ajax.reload();
+                    self.reloadTable();
                 },
                 error: (xhr) => {
-                    this.audio.play();
-                    toastr.error("Ada inputan yang salah!", "GAGAL!", {
-                        progressBar: true,
-                        timeOut: 3500,
-                        positionClass: "toast-bottom-right",
-                    });
+                    if (xhr.status === 422) {
+                        this.audio.play();
+                        toastr.error("Ada inputan yang salah!", "GAGAL!", {
+                            progressBar: true,
+                            timeOut: 3500,
+                            positionClass: "toast-bottom-right",
+                        });
 
-                    const errors = xhr.responseJSON.errors;
-                    $.each(errors, function (key, val) {
-                        const input = $('#' + key);
-                        input.addClass('is-invalid');
-                        input.parent().find('.invalid-feedback').remove();
-                        input.parent().append(`<span class="invalid-feedback" role="alert"><strong>${val[0]}</strong></span>`);
-                    });
+                        const errors = xhr.responseJSON.errors;
+                        $.each(errors, function (key, val) {
+                            const input = $('#' + key);
+                            input.addClass('is-invalid');
+                            input.parent().find('.invalid-feedback').remove();
+                            input.parent().append(`<span class="invalid-feedback" role="alert"><strong>${val[0]}</strong></span>`);
+                        });
+                    }
                 }
             });
         });
@@ -98,29 +104,29 @@ class SewaModule {
     handleEdit() {
         $(document).on('click', '#edit-button', function () {
             const url = $(this).data('url');
-
-            $.get(url, (res) => {
+            $.get(url, function (res) {
                 if (res.status === 'success') {
-                    const d = res.data;
-                    $('#primary_id').val(d.id);
-                    $('#id_kategori_sewa').val(d.id_kategori_sewa).trigger('change');
-                    $('#nama_layanan').val(d.nama_layanan);
-                    $('#email').val(d.email);
-                    $('#password').val(d.password);
-                    $('#tgl_sewa').val(d.tgl_sewa);
-                    $('#tgl_expired').val(d.tgl_expired);
-                    $('#vendor').val(d.vendor);
-                    $('#url_vendor').val(d.url_vendor);
+                    const data = res.data;
+                    $('#primary_id').val(data.id);
+                    $('#id_project').val(data.id_project).trigger('change');
+                    $('#tgl_komplen').val(data.tgl_komplen);
+                    $('#tgl_target_selesai').val(data.tgl_target_selesai);
+                    $('#deskripsi_komplen').val(data.deskripsi_komplen);
+                    $('#penanggung_jawab').val(data.penanggung_jawab);
+                    $('#status_komplen').val(data.status_komplen).trigger('change');
+                    $('#catatan_penanggung_jawab').val(data.catatan_penanggung_jawab);
                 }
             });
         });
     }
 
     handleDelete() {
+        const self = this;
+    
         $(document).on('click', '.delete-button', function (e) {
             e.preventDefault();
             const form = $(this).closest('form');
-
+    
             Swal.fire({
                 title: 'Apakah Anda yakin?',
                 text: 'Data ini akan dihapus secara permanen!',
@@ -134,15 +140,15 @@ class SewaModule {
                         url: form.attr('action'),
                         method: 'POST',
                         data: form.serialize(),
-                        success: () => {
+                        success: function () {
                             toastr.success("Data telah dihapus!", "BERHASIL", {
                                 progressBar: true,
                                 timeOut: 3500,
                                 positionClass: "toast-bottom-right",
                             });
-                            this.table.ajax.reload();
+                            self.reloadTable(); // ✅ gunakan self
                         },
-                        error: () => {
+                        error: function () {
                             toastr.error("Gagal menghapus data.", "GAGAL!", {
                                 progressBar: true,
                                 timeOut: 3500,
@@ -154,8 +160,8 @@ class SewaModule {
             });
         });
     }
-
-    resetModal() {
+    
+    resetModalOnClose() {
         $('#modalForm').on('hidden.bs.modal', function () {
             $('#formData')[0].reset();
             $('#primary_id').val('');
@@ -167,5 +173,5 @@ class SewaModule {
 }
 
 $(document).ready(() => {
-    window.SewaApp = new SewaModule();
+    window.HelpDeskApp = new HelpDeskModule();
 });

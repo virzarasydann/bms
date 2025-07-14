@@ -46,7 +46,7 @@ class KategoriSewaController extends Controller
                 ->make(true);
         }
 
-        return view('admin.kategori_sewa.index', compact('permissions'));
+        return view('admin.master_data.kategori_sewa.index', compact('permissions'));
     }
 
     public function store(Request $request)
