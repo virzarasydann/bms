@@ -15,8 +15,58 @@ class ProjectModule {
         this.handleEdit();
         this.handleDelete();
         this.resetModalOnClose();
+        this.handleStatusPembayaranChange();
+        this.initCleave();
     }
 
+
+    initCleave() {
+        this.cleaveRupiahFields = [];
+    
+        const cleaveInputs = ['#nilai_project', '#nilai_dp'];
+        cleaveInputs.forEach(selector => {
+            if ($(selector).length) {
+                const cleave = new Cleave(selector, {
+                    numeral: true,
+                    numeralThousandsGroupStyle: 'thousand',
+                    numeralDecimalMark: ',',
+                    delimiter: '.',
+                    numeralDecimalScale: 0,
+                });
+                this.cleaveRupiahFields.push(cleave);
+            }
+        });
+    }
+
+    
+
+    handleStatusPembayaranChange() {
+        const self = this;
+        $(document).on('change', '#status_pembayaran', function () {
+            const value = $(this).val();
+    
+            
+    
+            if (value === 'DP') {
+                $('#wrapper-nominal-dp-container').html(`
+                    <label for="nilai_dp" class="col-sm-4 col-form-label">Nominal DP</label>
+                    <div class="col-sm-8">
+                        <div class="input-group">
+                            <span class="input-group-text">Rp.</span>
+                            <input type="text" class="form-control" id="nilai_dp" name="nilai_dp" ">
+                        </div>
+                    </div>
+                `);
+                self.initCleave();
+                
+            } else {
+                $('#wrapper-nominal-dp-container').html('');
+            }
+        });
+    }
+    
+
+    
     initSelect2() {
         $('.select2').select2({
             theme: "bootstrap4",
@@ -116,21 +166,25 @@ class ProjectModule {
     }
 
     handleEdit() {
+        const self = this
         $(document).on('click', '#edit-button', function () {
             const url = $(this).data('url');
-
+            
             $.get(url, function (res) {
                 if (res.status === 'success') {
                     const data = res.data;
                     $('#primary_id').val(data.id);
-                    $('#nama_project').val(data.nama_project);
-                    $('#id_customer').val(data.id_customer).trigger('change');
-                    $('#id_kategori_project').val(data.id_kategori_project).trigger('change');
-                    $('#tgl_kontrak').val(data.tgl_kontrak);
+                    $('#nama_project').val(data.nama_project).prop('disabled', true);
+                    $('#id_customer').val(data.id_customer).trigger('change').prop('disabled', true);
+                    $('#id_kategori_project').val(data.id_kategori_project).trigger('change').prop('disabled', true);;
+                    $('#tgl_kontrak').val(data.tgl_kontrak).prop('disabled', true);;
                     $('#tanggal_selesai').val(data.tanggal_selesai);
-                    $('#nilai_project').val(data.nilai_project);
+                    $('#nilai_project').val(data.nilai_project).prop('disabled', true);;
                     $('#penanggung_jawab').val(data.penanggung_jawab);
-                    $('#status_pembayaran').val(data.status_pembayaran).trigger('change');
+                    $('#status_pembayaran').val(data.status_pembayaran).trigger('change').prop('disabled', true);
+                    $('#id_bank').val(res.id_bank).trigger('change');
+                    $('#nilai_dp').val(res.nominal_dp).prop('disabled', true);
+                    self.initCleave();
                 }
             });
         });
@@ -184,6 +238,14 @@ class ProjectModule {
             $('.is-invalid').removeClass('is-invalid');
             $('.invalid-feedback').remove();
             $('.select2').val('').trigger('change');
+            $('#wrapper-nominal-dp-container').html('');
+            $('#nama_project').prop('disabled', false);
+            $('#tgl_kontrak').prop('disabled', false);
+            $('#nilai_project').prop('disabled', false);
+            $('#id_customer').prop('disabled', false);
+            $('#id_kategori_project').prop('disabled', false);
+            $('#status_pembayaran').prop('disabled', false);
+            $('#nilai_dp').prop('disabled', false);
         });
     }
 }

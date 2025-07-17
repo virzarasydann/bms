@@ -14,8 +14,58 @@ class PengeluaranModule {
         this.handleDelete();
         this.resetModalOnClose();
         this.handlePreview();
+        this.handleKategoriTransaksiChange();
+        this.handleSisaBayar();
+        this.initCleave();
     }
 
+    initCleave() {
+        this.cleaveRupiahFields = [];
+    
+        const cleaveInputs = ['#nominal','#sisa_bayar'];
+        cleaveInputs.forEach(selector => {
+            if ($(selector).length) {
+                const cleave = new Cleave(selector, {
+                    numeral: true,
+                    numeralThousandsGroupStyle: 'thousand',
+                    numeralDecimalMark: ',',
+                    delimiter: '.',
+                    numeralDecimalScale: 0,
+                });
+                this.cleaveRupiahFields.push(cleave);
+            }
+        });
+    }
+
+    handleKategoriTransaksiChange() {
+        $('#id_kategori_transaksi').on('change', function () {
+            const selected = $(this).find('option:selected').data('nama');
+        
+            if (selected === 'Pembayaran Hutang') {
+                $('#wrapper-select-hutang').show();
+              
+            } else {
+                $('#wrapper-select-hutang').hide();
+                $('#id_hutang').val('').trigger('change'); // reset saat disembunyikan
+            }
+        });
+    }
+
+    handleSisaBayar() {
+        const self = this;
+        $('#id_hutang').on('change', function() {
+           
+            let selectedOption = $(this).find('option:selected');
+            
+            
+            let nominal = selectedOption.data('nominal') || 0; 
+            
+          
+            $('#sisa_bayar').val(nominal);
+            self.initCleave();
+            $('#show-sisa-bayar').show();
+        });
+    }
     initSelect2() {
         $('.select2').select2({
             theme: "bootstrap4",
@@ -105,6 +155,7 @@ class PengeluaranModule {
     }
 
     handleEdit() {
+        const self = this;
         $(document).on('click', '.edit-button', function () {
             const url = $(this).data('url');
 
@@ -116,23 +167,25 @@ class PengeluaranModule {
                         
                     
                         $('#primary_id').val(data.id);
-                        $('#id_bank').val(data.id_bank).trigger('change');
-                        $('#id_kategori_transaksi').val(data.id_kategori_transaksi).trigger('change');
-                        $('#tanggal').val(data.tanggal);
-                        $('#nominal').val(data.nominal);
-                        $('#keterangan').val(data.keterangan);
-                    
+                        $('#id_bank').val(data.id_bank).trigger('change').prop('disabled', true);
+                        $('#id_kategori_transaksi').val(data.id_kategori_transaksi).trigger('change').prop('disabled', true);
+                        $('#tanggal').val(data.tanggal).prop('disabled', true);
+                        $('#nominal').val(data.nominal).prop('disabled', true);
+                        $('#keterangan').val(data.keterangan).prop('disabled', true);
+                        $('#id_hutang').val(data.id_hutang).trigger('change').prop('disabled', true);
                         
                         if (res.lampiran_url) {
+                            $('#lampiran').prop('disabled',true)
                             $('#lihat-lampiran')
                                 .attr('href', res.lampiran_url)
-                                .text('Lihat Lampiran');
+                                .text('Lihat Lampiran')
+                                
                             $('#lihat-lampiran-wrapper').removeClass('d-none');
                         } else {
                             $('#lihat-lampiran-wrapper').addClass('d-none');
                         }
                     
-                    
+                    self.initCleave();
                 }
             });
         });
@@ -206,6 +259,14 @@ class PengeluaranModule {
             $('.select2').val('').trigger('change');
             $('#lihat-lampiran-wrapper').addClass('d-none');
             $('#lihat-lampiran').attr('href', '#');
+            $('#show-sisa-bayar').hide();
+            $('#id_bank').prop('disabled', false);
+            $('#id_kategori_transaksi').prop('disabled', false);
+            $('#tanggal').prop('disabled', false);
+            $('#nominal').prop('disabled', false);
+            $('#keterangan').prop('disabled', false);
+            $('#id_hutang').prop('disabled', false);
+            $('#lampiran').prop('disabled',false)
         });
     }
 }

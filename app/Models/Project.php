@@ -32,4 +32,23 @@ class Project extends Model
     {
         return $this->belongsTo(Customer::class, 'id_customer');
     }
+
+    public function piutang()
+    {
+        return $this->hasOne(Piutang::class, 'id_project');
+    }
+    
+    public function pemasukan()
+    {
+        return $this->hasOne(Pemasukan::class, 'id_project');
+    }
+    
+    
+    public function helpDesk()
+    {
+        return $this->hasMany(HelpDesk::class, 'id_project');
+    }
+
+
+
 }

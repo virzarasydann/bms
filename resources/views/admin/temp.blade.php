@@ -102,33 +102,52 @@
 
                 <div class="card">
                     <div class="card-header">
-                        <h3 class="card-title">Data Dashboard</h3>
+                        <h3 class="card-title">Posisi saldo per Jenis data</h3>
                     </div>
                     <div class="card-body table-responsive">
                         <table class="table table-bordered table-striped">
                             <thead class="bg-warning">
                                 <tr>
                                     <th>No</th>
-                                    <th>Project Belum Selesai</th>
-                                    <th>Helpdesk Belum Close</th>
-
+                                    <th>Jenis Data</th>
+                                    <th>Pemasukan</th>
+                                    <th>Pengeluaran</th>
+                                    <th>Saldo</th>
+                                    <th>Action</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach ($projectBelumSelesai as $index => $project)
+                                {{-- @foreach ($data as $item)
                                     <tr>
-                                        <td>{{ $index + 1 }}</td>
-                                        <td>{{ $project->nama_project }}</td>
-                                        <td>
-                                            <ul>
-                                                @foreach ($project->helpDesk as $komplen)
-                                                    <li>{{ $komplen->status_komplen }} - {{ $komplen->deskripsi_komplen }}
-                                                    </li>
-                                                @endforeach
-                                            </ul>
+                                        <td>{{ $item['no'] }}</td>
+                                        <td>{{ $item['jenis_data'] }}</td>
+                                        <td class="text-right">
+                                            <div class="d-flex justify-content-between">
+                                                <span class="me-2">Rp</span>
+                                                <span>{{ number_format($item['pemasukan'], 0, ',', '.') }}</span>
+                                            </div>
                                         </td>
+                                        <td class="text-right">
+                                            <div class="d-flex justify-content-between">
+                                                <span class="me-2">Rp</span>
+                                                <span>{{ number_format($item['pengeluaran'], 0, ',', '.') }}</span>
+                                            </div>
+                                        </td>
+                                        <td class="text-right">
+                                            <div class="d-flex justify-content-between">
+                                                <span class="me-2">Rp</span>
+                                                <span>{{ number_format($item['saldo'], 0, ',', '.') }}</span>
+                                            </div>
+                                        </td>
+                                        <td class="text-center">
+                                            <button class="btn btn-info btn-sm" data-toggle="modal"
+                                                data-target="#modalDetail{{ $item['id'] }}">
+                                                Detail
+                                            </button>
+                                        </td>
+
                                     </tr>
-                                @endforeach
+                                @endforeach --}}
                             </tbody>
                         </table>
 
@@ -252,5 +271,13 @@
     </section>
 @endsection
 @push('scripts')
-    <script></script>
+    <script>
+        $(document).ready(function() {
+            $('.select-tahun').select2({
+                theme: "bootstrap4",
+                minimumResultsForSearch: Infinity,
+                placeholder: "Pilih Tahun",
+            });
+        });
+    </script>
 @endpush

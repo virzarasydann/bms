@@ -13,37 +13,43 @@ class PemasukanApp {
         this.handleDelete();
         this.resetFormOnModalClose();
         this.handleKategoriTransaksiChange();
-
+        this.initCleave();
+        this.handlePreview();
         $('.select2').select2({ theme: 'bootstrap4', placeholder: '-- Pilih --', allowClear: false,  dropdownParent: $('#modalForm')});
     }
+
+    initCleave() {
+        this.cleaveRupiahFields = [];
+    
+        const cleaveInputs = ['#nominal'];
+        cleaveInputs.forEach(selector => {
+            if ($(selector).length) {
+                const cleave = new Cleave(selector, {
+                    numeral: true,
+                    numeralThousandsGroupStyle: 'thousand',
+                    numeralDecimalMark: ',',
+                    delimiter: '.',
+                    numeralDecimalScale: 0,
+                });
+                this.cleaveRupiahFields.push(cleave);
+            }
+        });
+    }
+
 
     handleKategoriTransaksiChange() {
         $('#id_kategori_transaksi').on('change', function () {
             const selected = $(this).find('option:selected').data('nama');
-            
+    
             if (selected === 'Pembayaran Piutang') {
-                // Tambahkan select baru kalau belum ada
-                if (!$('#id_piutang').length) {
-                    const html = `
-                        <div class="form-group row mb-3" id="wrapper-piutang">
-                            <label for="id_piutang" class="col-sm-4 col-form-label">Pilih Piutang</label>
-                            <div class="col-sm-8">
-                                <select class="form-control select2" id="id_piutang" name="id_piutang">
-                                    <option value="">-- Pilih Piutang --</option>
-                                    
-                                </select>
-                            </div>
-                        </div>
-                    `;
-                    $('#wrapper-select-piutang').html(html);
-                    $('.select2').select2({ theme: 'bootstrap4' });
-                }
+                $('#wrapper-select-piutang').show();
             } else {
-                // Hapus jika bukan Pembayaran Piutang
-                $('#wrapper-select-piutang').empty();
+                $('#wrapper-select-piutang').hide();
+                $('#id_piutang').val('').trigger('change'); // reset saat disembunyikan
             }
         });
     }
+    
     
     initDataTable() {
         const showAction = this.permissions.edit || this.permissions.hapus;
@@ -58,6 +64,7 @@ class PemasukanApp {
                 { data: 'kategori', name: 'kategoriTransaksi.nama_kategori' },
                 { data: 'bank', name: 'bank.nama_bank' },
                 { data: 'keterangan' },
+                { data: 'lampiran' },
                 { data: 'action', orderable: false, searchable: false },
             ]
         });
@@ -65,6 +72,26 @@ class PemasukanApp {
 
     reloadTable() {
         this.table.ajax.reload();
+    }
+
+    handlePreview() {
+        $(document).on('click', '.btn-preview-lampiran', function (e) {
+            e.preventDefault();
+            const url = $(this).data('url');
+            console.log(url)
+            let html = '';
+    
+            if (url.match(/\.(jpg|jpeg|png)$/i)) {
+                html = `<img src="${url}" class="img-fluid" alt="Lampiran">`;
+            } else if (url.match(/\.(pdf)$/i)) {
+                html = `<embed src="${url}" type="application/pdf" width="100%" height="600px" />`;
+            } else {
+                html = `<p class="text-danger">File tidak dapat ditampilkan.</p>`;
+            }
+    
+            $('#preview-lampiran-body').html(html);
+            $('#modalLampiran').modal('show');
+        });
     }
 
     handleFormSubmit() {
@@ -118,21 +145,38 @@ class PemasukanApp {
     }
 
     handleEdit() {
+        const self = this;
+    
         $(document).on('click', '#edit-button', function () {
             const url = $(this).data('url');
+    
             $.get(url, function (res) {
                 if (res.status === 'success') {
                     const data = res.data;
+    
                     $('#primary_id').val(data.id);
                     $('#tanggal').val(data.tanggal);
                     $('#id_bank').val(data.id_bank).trigger('change');
                     $('#id_kategori_transaksi').val(data.id_kategori_transaksi).trigger('change');
                     $('#nominal').val(data.nominal);
                     $('#keterangan').val(data.keterangan);
+    
+                    $('#id_piutang').val(data.id_piutang).trigger('change');
+                    
+                    if (res.lampiran_url) {
+                        $('#lihat-lampiran')
+                            .attr('href', res.lampiran_url)
+                            .text('Lihat Lampiran');
+                        $('#lihat-lampiran-wrapper').removeClass('d-none');
+                    } else {
+                        $('#lihat-lampiran-wrapper').addClass('d-none');
+                    }
+                    self.initCleave();
                 }
             });
         });
     }
+    
 
     handleDelete() {
         $(document).on('click', '.delete-button', (e) => {
@@ -153,6 +197,7 @@ class PemasukanApp {
                         method: 'POST',
                         data: form.serialize(),
                         success: () => {
+                            this.audio.play();
                             toastr.success("Data telah dihapus!", "BERHASIL", {
                                 progressBar: true,
                                 timeOut: 3500,
@@ -161,6 +206,7 @@ class PemasukanApp {
                             this.reloadTable();
                         },
                         error: () => {
+                            this.audio.play();
                             toastr.error("Gagal menghapus data.", "GAGAL!", {
                                 progressBar: true,
                                 timeOut: 3500,

@@ -19,14 +19,24 @@ class PiutangController extends Controller
             return DataTables::of($data)
                 ->addIndexColumn()
                 ->addColumn('bank', fn ($row) => $row->bank->nama_bank ?? '-')
+                ->addColumn('lampiran', function ($row) {
+                    if ($row->lampiran) {
+                        return '<a href="#" class="btn-preview-lampiran text-primary" data-url="' . asset('storage/' . $row->lampiran) . '">Lihat</a>';
+                    }
+                    return '-';
+                })
                 ->addColumn('action', function ($row) use ($permissions) {
                     $editUrl = route('piutang.edit', $row->id);
                     $deleteUrl = route('piutang.destroy', $row->id);
 
                     $btn = '<div class="d-flex justify-content-center">';
                     if ($permissions['edit']) {
+                        $label = $row->id_project == 0 ? 'Edit' : 'Detail';
+                        $mode = $row->id_project == 0 ? 'edit' : 'detail';
+                        
                         $btn .= '<button class="btn btn-primary btn-xs mx-1" data-id="' . $row->id . '"
-                            data-url="' . $editUrl . '" id="edit-button">Edit</button>';
+                            data-url="' . $editUrl . '" data-mode="' . $mode . '" id="edit-button">' . $label . '</button>';
+                        
                     }
                     if ($permissions['hapus']) {
                         $btn .= '<form action="' . $deleteUrl . '" method="POST">' .
@@ -35,7 +45,7 @@ class PiutangController extends Controller
                     }
                     return $btn . '</div>';
                 })
-                ->rawColumns(['action'])
+                ->rawColumns(['action','lampiran'])
                 ->make(true);
         }
 
@@ -45,6 +55,10 @@ class PiutangController extends Controller
 
     public function store(Request $request)
     {
+        $request->merge([
+            'nominal' => str_replace('.', '', $request->nominal),
+            
+        ]);
         $request->validate([
             'id_bank' => 'required',
             'tanggal_piutang' => 'required|date',
@@ -61,15 +75,22 @@ class PiutangController extends Controller
            
             
         ]);
-
-        Piutang::create($request->all());
+        $data = $request->all();
+        if ($request->hasFile('lampiran')) {
+            $file = $request->file('lampiran');
+            $lampiranPath = $file->store('asset/piutang', 'public');
+            $data['lampiran'] = $lampiranPath;
+        }
+        Piutang::create($data);
 
         return response()->json(['status' => 'success']);
     }
 
     public function edit(Piutang $piutang)
     {
-        return response()->json(['status' => 'success', 'data' => $piutang]);
+        return response()->json(['status' => 'success', 'data' => $piutang,  'lampiran_url' => $piutang->lampiran 
+        ? asset('storage/' . $piutang->lampiran)
+        : null]);
     }
 
     public function update(Request $request, Piutang $piutang)

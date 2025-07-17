@@ -18,7 +18,7 @@ use App\Http\Controllers\PiutangController;
 use App\Http\Controllers\PengeluaranController;
 use App\Http\Controllers\HutangController;
 use App\Http\Controllers\MutasiSaldoController;
-
+use App\Http\Controllers\DataAkunController;
 
 Route::get('/', function () {
     if (Auth::check()) {
@@ -55,7 +55,7 @@ Route::middleware('auth')->prefix('admin')->group(function () {
     Route::resource('pengeluaran', PengeluaranController::class);
     Route::resource('hutang', HutangController::class);
     Route::resource('mutasi', MutasiSaldoController::class);
-
+    Route::resource('akun', DataAkunController::class);
 
     Route::post('admin/logout', [AuthController::class, 'logout'])->name('admin.logout');
     Route::get('admin/hak-akses', [HakAksesController::class, 'hak_akses'])->name('hakakses');

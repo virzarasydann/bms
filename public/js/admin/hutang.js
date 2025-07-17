@@ -14,6 +14,7 @@ class HutangModule {
         this.handleDelete();
         this.resetModalOnClose();
         this.handlePreview();
+        this.initCleave();
     }
 
     initSelect2() {
@@ -24,7 +25,26 @@ class HutangModule {
         });
     }
 
+    initCleave() {
+        this.cleaveRupiahFields = [];
+    
+        const cleaveInputs = ['#nominal'];
+        cleaveInputs.forEach(selector => {
+            if ($(selector).length) {
+                const cleave = new Cleave(selector, {
+                    numeral: true,
+                    numeralThousandsGroupStyle: 'thousand',
+                    numeralDecimalMark: ',',
+                    delimiter: '.',
+                    numeralDecimalScale: 0,
+                });
+                this.cleaveRupiahFields.push(cleave);
+            }
+        });
+    }
+
     initDataTable() {
+        
         this.table = $('.data-table').DataTable({
             processing: true,
             serverSide: true,
@@ -102,6 +122,7 @@ class HutangModule {
     }
 
     handleEdit() {
+        const self = this;
         $(document).on('click', '.edit-button', function () {
             const url = $(this).data('url');
 
@@ -124,6 +145,8 @@ class HutangModule {
                     } else {
                         $('#lihat-lampiran-wrapper').addClass('d-none');
                     }
+
+                    self.initCleave();
                 }
             });
         });

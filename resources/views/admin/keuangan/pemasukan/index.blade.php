@@ -40,7 +40,8 @@
                                             <th>Nominal</th>
                                             <th>Kategori</th>
                                             <th>Rekening</th>
-                                            <th>Lampiran</th>
+                                            <th>Keterangan</th>
+                                            <th width="50px">Lampiran</th>
                                         
 
                                         
@@ -51,6 +52,18 @@
                                     <tbody>
                                     </tbody>
                                 </table>
+                                <div class="modal fade" id="modalLampiran" tabindex="-1" aria-hidden="true">
+                                    <div class="modal-dialog modal-xl modal-dialog-centered">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title">Preview Lampiran</h5>
+                                                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                
+                                            </div>
+                                            <div class="modal-body" id="preview-lampiran-body"></div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                             <!-- /.card-body -->
                         </div>
@@ -155,7 +168,20 @@
 
                         </div>
 
-                        <div id="wrapper-select-piutang"></div>
+                        <div class="form-group row mb-3" id="wrapper-select-piutang" style="display: none;">
+                            <label for="id_piutang" class="col-sm-4 col-form-label">Pilih Piutang</label>
+                            <div class="col-sm-8">
+                                <select class="form-control select2" id="id_piutang" name="id_piutang">
+                                    <option value="">-- Pilih Piutang --</option>
+                                    @foreach ($dataPiutang as $piutang)
+                                        <option value="{{ $piutang->id }}" data-nama="{{ $piutang->project->nama_project ?? '-' }}">
+                                            Piutang dari project {{ $piutang->project->nama_project ?? '-' }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+                        
 
 
 
@@ -174,6 +200,7 @@
 @endsection
 @push('scripts')
     <script>
+        // window.dataPiutang = @json($dataPiutang);
         window.permissions = @json($permissions);
         window.routes = {
             index: "{{ route('pemasukan.index') }}",

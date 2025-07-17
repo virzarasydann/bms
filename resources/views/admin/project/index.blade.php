@@ -134,6 +134,18 @@
                             </div>
                         </div>
 
+                        <div class="form-group row mb-3">
+                            <label for="id_bank" class="col-sm-4 col-form-label">Rekening</label>
+                            <div class="col-sm-8">
+                                <select class="form-control select2" id="id_bank" name="id_bank">
+                                    <option value="">-- Pilih Rekening --</option>
+                                    @foreach ($dataBank as $bank)
+                                        <option value="{{ $bank->id }}">{{ $bank->nama_bank }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+
 
                         <div class="form-group row mb-3">
                             <label for="status_pembayaran" class="col-sm-4 col-form-label">Status Pembayaran</label>
@@ -142,8 +154,8 @@
 
 
                                     <option value="Paid">Paid</option>
-                                    <option value="Unpaid">Unpaid</option>
-                                    <option value="Pending">Pending</option>
+                                    <option value="Cicil">Cicil</option>
+                                    <option value="DP">DP</option>
 
                                 </select>
                             </div>
@@ -156,6 +168,11 @@
                                     value="{{ \Carbon\Carbon::now()->format('Y-m-d') }}">
                             </div>
                         </div>
+
+                        <!-- tempat tetap untuk DP -->
+                        <div id="wrapper-nominal-dp-container" class="form-group row mb-3"></div>
+
+
                     </div>
 
                     <div class="modal-footer">
@@ -169,7 +186,6 @@
 @endsection
 @push('scripts')
     <script>
-        
         window.permissions = @json($permissions);
         window.routes = {
             store: "{{ route('project.store') }}",

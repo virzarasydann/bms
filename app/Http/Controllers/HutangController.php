@@ -4,8 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Models\Bank;
 use App\Models\Hutang;
+use App\Models\Pemasukan;
 use Illuminate\Http\Request;
 use Yajra\DataTables\Facades\DataTables;
+use App\Models\KategoriTransaksi;
 
 class HutangController extends Controller
 {
@@ -47,6 +49,11 @@ class HutangController extends Controller
 
     public function store(Request $request)
     {
+        $request->merge([
+            'nominal' => str_replace('.', '', $request->nominal),
+            'sisa_bayar' => str_replace('.', '', $request->nominal),
+            'terbayar' => str_replace('.', '', $request->terbayar ?? '0'),
+        ]);
         $request->validate([
             'tanggal_hutang' => 'required|date',
             'deskripsi' => 'required',
@@ -57,8 +64,8 @@ class HutangController extends Controller
             'terbayar' => 'required|numeric',
             'sisa_bayar' => 'required|numeric',
             'tgl_pelunasan' => 'nullable|date',
-            'terbayar' => 'nullable',
-            'sisa_bayar' => 'nullable',
+            'terbayar' => 'nullable|numeric|min:0',
+            'sisa_bayar' => 'nullable|numeric|min:0',
             'status' => 'belum lunas'
         ], [
             'tanggal_hutang.required' => 'Tanggal hutang wajib diisi',
@@ -68,14 +75,35 @@ class HutangController extends Controller
             'lampiran.mimes' => 'Format file tidak valid',
             
         ]);
-
+       
         $data = $request->except('lampiran');
         if ($request->hasFile('lampiran')) {
             $file = $request->file('lampiran')->store('asset/hutang', 'public');
             $data['lampiran'] = $file;
         }
         
-        Hutang::create($data);
+        $hutang = Hutang::create($data);
+        $kategoriHutang = KategoriTransaksi::where('nama_kategori', 'Pencairan Hutang')->first();
+
+        if (!$kategoriHutang) {
+            throw \Illuminate\Validation\ValidationException::withMessages([
+                'id_kategori_transaksi' => 'Kategori Hutang External tidak ditemukan',
+            ]);
+        }
+        $dataPemasukan = [
+            'id_hutang' => $hutang->id,
+            'id_project' => 0, // Sesuaikan jika ada logika untuk project
+            'id_piutang' => 0, // Sesuaikan jika ada logika untuk piutang
+            'tanggal' => $data['tanggal_hutang'],
+            'id_bank' => $data['id_bank'],
+            'nominal' => $data['nominal'],
+            'lampiran' => $data['lampiran'] ?? null,
+            'id_kategori_transaksi' => $kategoriHutang->id,
+            'keterangan' => 'Pemasukan dari hutang: ' . $data['deskripsi'],
+        ];
+
+        // Buat record Pemasukan
+        Pemasukan::create($dataPemasukan);
 
         return response()->json(['status' => 'success']);
     }

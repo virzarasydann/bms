@@ -1,4 +1,4 @@
-class PiutangModule {
+class DataAkunModule {
     constructor() {
         this.table = null;
         this.audio = new Audio('/audio/notification.ogg');
@@ -13,58 +13,6 @@ class PiutangModule {
         this.handleEdit();
         this.handleDelete();
         this.resetModalOnClose();
-        this.handlePreview();
-        this.initCleave();
-        this.handlePreview();
-    }
-
-    handlePreview() {
-        $(document).on('click', '.btn-preview-lampiran', function (e) {
-            e.preventDefault();
-            const url = $(this).data('url');
-            console.log(url)
-            let html = '';
-    
-            if (url.match(/\.(jpg|jpeg|png)$/i)) {
-                html = `<img src="${url}" class="img-fluid" alt="Lampiran">`;
-            } else if (url.match(/\.(pdf)$/i)) {
-                html = `<embed src="${url}" type="application/pdf" width="100%" height="600px" />`;
-            } else {
-                html = `<p class="text-danger">File tidak dapat ditampilkan.</p>`;
-            }
-    
-            $('#preview-lampiran-body').html(html);
-            $('#modalLampiran').modal('show');
-        });
-    }
-
-
-    initCleave() {
-        this.cleaveRupiahFields = [];
-    
-        const cleaveInputs = ['#nominal'];
-        cleaveInputs.forEach(selector => {
-            if ($(selector).length) {
-                const cleave = new Cleave(selector, {
-                    numeral: true,
-                    numeralThousandsGroupStyle: 'thousand',
-                    numeralDecimalMark: ',',
-                    delimiter: '.',
-                    numeralDecimalScale: 0,
-                });
-                this.cleaveRupiahFields.push(cleave);
-            }
-        });
-    }
-
-
-    initSelect2() {
-        $('.select2').select2({
-            theme: "bootstrap4",
-            placeholder: '-- Pilih --',
-            allowClear: false,
-            dropdownParent: $('#modalForm')
-        });
     }
 
     initDataTable() {
@@ -76,16 +24,8 @@ class PiutangModule {
             ordering: false,
             columns: [
                 { data: 'DT_RowIndex', orderable: false, searchable: false },
-                { data: 'tanggal_piutang' },
-                { data: 'deskripsi' },
-                { data: 'nominal' },
-                { data: 'status' },
-                { data: 'lampiran' },
-                
-                
-                
-               
-                { data: 'tgl_pelunasan' },
+                { data: 'nama_akun' },
+                { data: 'user_id' },
                 { data: 'action', orderable: false, searchable: false }
             ]
         });
@@ -119,7 +59,7 @@ class PiutangModule {
                 success: () => {
                     $('#modalForm').modal('hide');
                     this.audio.play();
-                    toastr.success("Data telah disimpan!", "BERHASIL", {
+                    toastr.success("Data akun berhasil disimpan!", "BERHASIL", {
                         progressBar: true,
                         timeOut: 3500,
                         positionClass: "toast-bottom-right",
@@ -152,68 +92,23 @@ class PiutangModule {
 
     handleEdit() {
         const self = this;
-        $(document).on('click', '#edit-button', function () {
+        $(document).on('click', '.edit-button', function () {
             const url = $(this).data('url');
-            const mode = $(this).data('mode'); 
-    
+
             $.get(url, function (res) {
                 if (res.status === 'success') {
                     const data = res.data;
-    
+
                     $('#primary_id').val(data.id);
-                    $('#id_invoice').val(data.id_invoice).trigger('change');
-                    $('#tanggal_piutang').val(data.tanggal_piutang);
-                    $('#id_bank').val(data.id_bank).trigger('change');
-                    $('#deskripsi').val(data.deskripsi);
-                    $('#nominal').val(data.nominal);
-                    $('#status').val(data.status).trigger('change');
-                    $('#terbayar').val(data.terbayar);
-                    $('#sisa_bayar').val(data.sisa_bayar);
-                    $('#tgl_pelunasan').val(data.tgl_pelunasan);
-    
-                    if (res.lampiran_url) {
-                        $('#lihat-lampiran')
-                            .attr('href', res.lampiran_url)
-                            .text('Lihat Lampiran');
-                        $('#lihat-lampiran-wrapper').removeClass('d-none');
-                    } else {
-                        $('#lihat-lampiran-wrapper').addClass('d-none');
-                    }
-    
-                    // Handle disable input jika mode === 'detail'
-                    if (mode === 'detail') {
-                        $('#formData :input').prop('disabled', true); 
-                        $('#submitBtn').hide();
-                        $('#cancelBtn').hide();  
-                    } 
-    
+                    $('#nama_akun').val(data.nama_akun);
+                    $('#user_id').val(data.user_id);
+                    $('#password').val(''); // Kosongkan karena tidak perlu tampil password lama
+
                     $('#modalForm').modal('show');
-                    self.initCleave();
                 }
             });
         });
     }
-    
-
-    handlePreview() {
-        $(document).on('click', '.btn-preview-lampiran', function (e) {
-            e.preventDefault();
-            const url = $(this).data('url');
-            let html = '';
-    
-            if (url.match(/\.(jpg|jpeg|png)$/i)) {
-                html = `<img src="${url}" class="img-fluid w-100 h-auto" alt="Lampiran">`;
-            } else if (url.match(/\.(pdf)$/i)) {
-                html = `<embed src="${url}" type="application/pdf" style="width:100%; height:80vh;" />`;
-            } else {
-                html = `<p class="text-danger">File tidak dapat ditampilkan.</p>`;
-            }
-    
-            $('#preview-lampiran-body').html(html);
-            $('#modalLampiran').modal('show');
-        });
-    }
-
 
     handleDelete() {
         $(document).on('click', '.delete-button', (e) => {
@@ -232,7 +127,7 @@ class PiutangModule {
                         method: 'POST',
                         data: form.serialize(),
                         success: () => {
-                            toastr.success("Data telah dihapus!", "BERHASIL", {
+                            toastr.success("Data akun berhasil dihapus!", "BERHASIL", {
                                 progressBar: true,
                                 timeOut: 3500,
                                 positionClass: "toast-bottom-right",
@@ -240,7 +135,7 @@ class PiutangModule {
                             this.table.ajax.reload();
                         },
                         error: () => {
-                            toastr.error("Gagal menghapus data.", "GAGAL!", {
+                            toastr.error("Gagal menghapus data akun.", "GAGAL!", {
                                 progressBar: true,
                                 timeOut: 3500,
                                 positionClass: "toast-bottom-right",
@@ -262,8 +157,17 @@ class PiutangModule {
             $('#formData :input').prop('disabled', false);
         });
     }
+
+    initSelect2() {
+        $('.select2').select2({
+            theme: "bootstrap4",
+            placeholder: '-- Pilih --',
+            allowClear: false,
+            dropdownParent: $('#modalForm')
+        });
+    }
 }
 
 $(function () {
-    window.PiutangApp = new PiutangModule();
+    window.DataAkunApp = new DataAkunModule();
 });

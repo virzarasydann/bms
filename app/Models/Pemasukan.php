@@ -14,7 +14,7 @@ class Pemasukan extends Model
 
     protected $fillable = [
         'id_hutang',
-        'id_invoice',
+        'id_project',
         'id_piutang',
         'tanggal',
         'id_bank',
@@ -32,5 +32,15 @@ class Pemasukan extends Model
     public function kategoriTransaksi()
     {
         return $this->belongsTo(KategoriTransaksi::class, 'id_kategori_transaksi');
+    }
+
+    public function project()
+    {
+        return $this->belongsTo(Project::class,'id_project');
+    }
+
+    public function piutang()
+    {
+        return $this->belongsTo(Piutang::class,'id_piutang');
     }
 }

@@ -169,13 +169,32 @@
                                     @endforeach
                                 </select>
                             </div>
-
-
-
                         </div>
 
+                        <div class="form-group row mb-3" id="wrapper-select-hutang" style="display: none;">
+                            <label for="id_hutang" class="col-sm-4 col-form-label">Pilih Hutang</label>
+                            <div class="col-sm-8">
+                                <select class="form-control select2" id="id_hutang" name="id_hutang">
+                                    <option value="">-- Pilih Hutang --</option>
+                                    @foreach ($dataHutang as $hutang)
+                                        <option value="{{ $hutang->id }}" data-nama="{{ $hutang->deskripsi ?? '-' }}" data-nominal="{{ $hutang->sisa_bayar ?? '-' }}">
+                                            {{ $hutang->deskripsi ?? '-' }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
 
-
+                        <div class="form-group row mb-3" style="display: none;" id="show-sisa-bayar">
+                            <label for="sisa_bayar" class="col-sm-4 col-form-label">Sisa Bayar</label>
+                            <div class="col-sm-8">
+                                <div class="input-group">
+                                    <span class="input-group-text">Rp.</span>
+                                    <input type="text" class="form-control" id="sisa_bayar" name="sisa_bayar"
+                                        disabled>
+                                </div>
+                            </div>
+                        </div>
 
 
                     </div>

@@ -52,6 +52,18 @@
                                     <tbody>
                                     </tbody>
                                 </table>
+                                <div class="modal fade" id="modalLampiran" tabindex="-1" aria-hidden="true">
+                                    <div class="modal-dialog modal-xl modal-dialog-centered">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title">Preview Lampiran</h5>
+                                                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                
+                                            </div>
+                                            <div class="modal-body" id="preview-lampiran-body"></div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                             <!-- /.card-body -->
                         </div>
@@ -175,7 +187,7 @@
 
                     <div class="modal-footer">
                         <button type="submit" id="submitBtn" class="btn btn-primary">Simpan</button>
-                        <button type="button" class="btn btn-danger" data-dismiss="modal">Batal</button>
+                        <button type="button" id="cancelBtn"class="btn btn-danger" data-dismiss="modal">Batal</button>
                     </div>
                 </form>
             </div>

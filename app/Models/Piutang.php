@@ -13,7 +13,7 @@ class Piutang extends Model
     public $timestamps = false;
 
     protected $fillable = [
-        'id_invoice',
+        'id_project',
         'tanggal_piutang',
         'id_bank',
         'deskripsi',
@@ -28,5 +28,14 @@ class Piutang extends Model
     public function bank()
     {
         return $this->belongsTo(Bank::class, 'id_bank');
+    }
+
+    public function piutang()
+{
+    return $this->hasOne(Piutang::class, 'id_project');
+}
+public function project()
+    {
+        return $this->belongsTo(Project::class,'id_project');
     }
 }
