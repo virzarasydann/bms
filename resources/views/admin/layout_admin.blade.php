@@ -149,7 +149,7 @@
                     <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu"
                         data-accordion="false">
 
-                        @php
+                        {{-- @php
                             $menus = session('getmenus');
                         @endphp
 
@@ -164,15 +164,13 @@
                                             : (request()->routeIs($menu->route_name)
                                                 ? 'active'
                                                 : '') }}"
-                                        @if (
-                                            ($menu->route_name === 'dashboard' && (request()->routeIs('dashboard') || request()->routeIs('dashboard.*'))) ||
-                                                ($menu->route_name !== 'dashboard' && request()->routeIs($menu->route_name))) style="background-color: #28a645; color: white;" @endif>
+                                        @if (($menu->route_name === 'dashboard' && (request()->routeIs('dashboard') || request()->routeIs('dashboard.*'))) || ($menu->route_name !== 'dashboard' && request()->routeIs($menu->route_name))) style="background-color: #28a645; color: white;" @endif>
                                         <i class="nav-icon fas {{ $menu->icon }}"></i>
                                         <p>{{ $menu->title }}</p>
                                     </a>
                                 </li>
                             @else
-                                {{-- Menu dengan anak --}}
+                                Menu dengan anak
                                 @php
                                     $isActive = $menu->children
                                         ->pluck('route_name')
@@ -200,7 +198,67 @@
                                     </ul>
                                 </li>
                             @endif
+                        @endforeach --}}
+
+                        @php
+                            $menus = session('getmenus');
+                        @endphp
+
+                        @foreach ($menus as $menu)
+                            @php
+                                // Cek apakah ada submenu aktif
+                                $isParentActive =
+                                    !$menu->children->isEmpty() &&
+                                    $menu->children->pluck('route_name')->contains(function ($route) {
+                                        return request()->routeIs($route . '*');
+                                    });
+
+                                // Cek apakah ini menu utama (tanpa children) dan aktif
+                                $isSingleActive =
+                                    $menu->children->isEmpty() && request()->routeIs($menu->route_name . '*');
+                            @endphp
+
+                            @if ($menu->children->isEmpty())
+                                {{-- Menu tunggal --}}
+                                <li class="nav-item">
+                                    <a href="{{ route($menu->route_name) }}"
+                                        class="nav-link {{ $isSingleActive ? 'active' : '' }}"
+                                        @if ($isSingleActive) style="background-color: #28a645; color: white;" @endif>
+                                        <i class="nav-icon fas {{ $menu->icon }}"></i>
+                                        <p>{{ $menu->title }}</p>
+                                    </a>
+                                </li>
+                            @else
+                                {{-- Menu dengan children --}}
+                                <li class="nav-item {{ $isParentActive ? 'menu-open' : '' }}">
+                                    <a href="#" class="nav-link {{ $isParentActive ? 'active' : '' }}"
+                                        @if ($isParentActive) style="background-color: #28a645; color: white;" @endif>
+                                        <i class="nav-icon fas {{ $menu->icon }}"></i>
+                                        <p>
+                                            {{ $menu->title }}
+                                            <i class="right fas fa-angle-left"></i>
+                                        </p>
+                                    </a>
+
+                                    <ul class="nav nav-treeview">
+                                        @foreach ($menu->children as $child)
+                                            @php
+                                                $isChildActive = request()->routeIs($child->route_name . '*');
+                                            @endphp
+                                            <li class="nav-item">
+                                                <a href="{{ route($child->route_name) }}"
+                                                    class="nav-link {{ $isChildActive ? 'active' : '' }}"
+                                                    @if ($isChildActive) style="background-color: #28a645; color: white;" @endif>
+                                                    <i class="far fa-circle nav-icon"></i>
+                                                    <p>{{ $child->title }}</p>
+                                                </a>
+                                            </li>
+                                        @endforeach
+                                    </ul>
+                                </li>
+                            @endif
                         @endforeach
+
 
 
 

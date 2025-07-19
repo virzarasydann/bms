@@ -72,7 +72,7 @@
 
                 </div>
 
-                <form method="GET" action="{{ route('dashboard') }}" class="mb-3">
+                {{-- <form method="GET" action="{{ route('dashboard') }}" class="mb-3">
                     <div class="form-inline">
                         <label for="tahun" class="mr-2">Pilih Tahun:</label>
                         <select name="tahun" id="tahun" class="form-control mr-2 select-tahun"
@@ -96,146 +96,119 @@
                             @endfor
                         </select>
                     </div>
-                </form>
+                </form> --}}
 
 
 
-                <div class="card">
-                    <div class="card-header">
-                        <h3 class="card-title">Data Dashboard</h3>
-                    </div>
-                    <div class="card-body table-responsive">
-                        <table class="table table-bordered table-striped">
-                            <thead class="bg-warning">
-                                <tr>
-                                    <th>No</th>
-                                    <th>Project Belum Selesai</th>
-                                    <th>Helpdesk Belum Close</th>
-
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach ($projectBelumSelesai as $index => $project)
-                                    <tr>
-                                        <td>{{ $index + 1 }}</td>
-                                        <td>{{ $project->nama_project }}</td>
-                                        <td>
-                                            <ul>
-                                                @foreach ($project->helpDesk as $komplen)
-                                                    <li>{{ $komplen->status_komplen }} - {{ $komplen->deskripsi_komplen }}
-                                                    </li>
-                                                @endforeach
-                                            </ul>
-                                        </td>
-                                    </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
-
-                        {{-- @foreach ($data as $item)
-                            <!-- Modal Detail -->
-                            <div class="modal fade" id="modalDetail{{ $item['id'] }}" tabindex="-1" role="dialog"
-                                aria-labelledby="modalDetailLabel{{ $item['id'] }}" aria-hidden="true">
-                                <div class="modal-dialog modal-xl" role="document">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <h5 class="modal-title">Detail Transaksi: {{ $item['jenis_data'] }}</h5>
-                                            <button type="button" class="close" data-dismiss="modal" aria-label="Tutup">
-                                                <span aria-hidden="true">&times;</span>
-                                            </button>
-                                        </div>
-                                        <div class="modal-body">
-                                            <table class="table table-bordered">
-                                                <thead class="bg-warning text-center align-middle">
-                                                    <tr>
-                                                        <th>No</th>
-                                                        <th>Tanggal</th>
-                                                        <th>Deskripsi</th>
-                                                        <th>Debet</th>
-                                                        <th>Kredit</th>
-                                                        <th>Saldo</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    @php
-
-                                                        $semuaTransaksi = collect();
-
-                                                        // Loop pemasukan
-                                                        foreach ($item['transaksi_pemasukan'] as $pemasukan) {
-                                                            $semuaTransaksi->push([
-                                                                'tanggal' => $pemasukan->tanggal_pemasukan,
-                                                                'deskripsi' =>
-                                                                    'Pemasukan dari: ' .
-                                                                    ($pemasukan->donatur->nama_lengkap ?? 'N/A'),
-                                                                'debet' => $pemasukan->nominal,
-                                                                'kredit' => 0,
-                                                            ]);
-                                                        }
-
-                                                        // Loop pengeluaran
-                                                        foreach ($item['transaksi_pengeluaran'] as $pengeluaran) {
-                                                            $tanggalPengeluaran =
-                                                                $pengeluaran->pengeluaran->tanggal_pengeluaran ?? null;
-                                                            $namaMustahik =
-                                                                $pengeluaran->pengeluaran->mustahik->nama_lengkap ??
-                                                                'N/A';
-
-                                                            $semuaTransaksi->push([
-                                                                'tanggal' => $tanggalPengeluaran,
-                                                                'deskripsi' => 'Pengeluaran ke: ' . $namaMustahik,
-                                                                'debet' => 0,
-                                                                'kredit' => $pengeluaran->nominal,
-                                                            ]);
-                                                        }
-
-                                                        // Urutkan berdasarkan tanggal
-                                                        $semuaTransaksi = $semuaTransaksi->sortBy('tanggal')->values();
-
-                                                        // Saldo awal
-                                                        $saldo = 0;
-                                                    @endphp
-
-                                                    @foreach ($semuaTransaksi as $i => $transaksi)
-                                                        @php
-                                                            $saldo += $transaksi['debet'] - $transaksi['kredit'];
-                                                        @endphp
-                                                        <tr>
-                                                            <td class="text-center">{{ $i + 1 }}</td>
-                                                            <td>{{ \Carbon\Carbon::parse($transaksi['tanggal'])->translatedFormat('d F Y') }}
-                                                            </td>
-                                                            <td>{{ $transaksi['deskripsi'] }}</td>
-                                                            <td class="text-end">
-                                                                @if ($transaksi['debet'] > 0)
-                                                                    Rp
-                                                                    {{ number_format($transaksi['debet'], 0, ',', '.') }}
-                                                                @endif
-                                                            </td>
-                                                            <td class="text-end">
-                                                                @if ($transaksi['kredit'] > 0)
-                                                                    Rp
-                                                                    {{ number_format($transaksi['kredit'], 0, ',', '.') }}
-                                                                @endif
-                                                            </td>
-                                                            <td class="text-end">
-                                                                Rp {{ number_format($saldo, 0, ',', '.') }}
-                                                            </td>
-                                                        </tr>
-                                                    @endforeach
-                                                </tbody>
-                                            </table>
-                                        </div>
-
-
-
-                                    </div>
-                                </div>
+                <div class="row">
+                    <!-- Card Kiri: Project -->
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-header bg-warning">
+                                <h3 class="card-title">Project Belum Selesai</h3>
                             </div>
-                        @endforeach --}}
+                            <div class="card-body table-responsive">
+                                <table class="table table-bordered table-striped">
+                                    <thead class="">
+                                        <tr>
+                                            <th width="5%">No</th>
+                                            <th>Nama Project</th>
+                                            <th>Tanggal Selesai</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach ($projects as $index => $project)
+                                            <tr>
+                                                <td>{{ $index + 1 }}</td>
+                                                <td>{{ $project->nama_project }}</td>
+                                                <td>{{ $project->tanggal_selesai }}</td>
+                                                <td>
+                                                    <a href="{{ route('dashboard.project.detail', $project->id) }}"
+                                                        class="btn btn-sm btn-primary">
+                                                        Detail
+                                                    </a>
+                                                </td>
+
+                                            </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Card Kanan: Helpdesk -->
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-header bg-warning">
+                                <h3 class="card-title">Helpdesk Belum Close</h3>
+                            </div>
+                            <div class="card-body table-responsive">
+                                <table class="table table-bordered table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th width="5%">No</th>
+                                            <th>Project</th>
+                                            <th>Status</th>
+                                            {{-- <th>Deskripsi</th> --}}
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach ($helpdesks as $index => $helpdesk)
+                                            <tr>
+                                                <td>{{ $index + 1 }}</td>
+                                                <td>{{ $helpdesk->project->nama_project ?? '-' }}</td>
+                                                <td>{{ $helpdesk->status_komplen }}</td>
+                                                {{-- <td>{{ $helpdesk->deskripsi_komplen }}</td> --}}
+                                            </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
 
 
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-header bg-warning">
+                                <h3 class="card-title">Sewa Dibawah 50 hari</h3>
+                            </div>
+                            <div class="card-body table-responsive">
+                                <table class="table table-bordered table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th width="5%">No</th>
+                                            <th>Nama Layanan</th>
+                                            <th>Tanggal Expired</th>
+                                            {{-- <th>Deskripsi</th> --}}
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @if ($sewaExpiring->isEmpty())
+                                            <tr>
+                                                <td colspan="3">Tidak ada data sewa yang akan habis dalam 50 hari</td>
+                                            </tr>
+                                        @else
+                                            @foreach ($sewaExpiring as $index => $sewa)
+                                                <tr>
+                                                    <td>{{ $index + 1 }}</td>
+                                                    <td>{{ $sewa->nama_layanan ?? '-' }}</td>
+                                                    <td>{{ $sewa->tgl_expired }}</td>
+                                                </tr>
+                                            @endforeach
+                                        @endif
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
                     </div>
                 </div>
+
+
+
+
 
             </div><!-- /.container-fluid -->
         </div>

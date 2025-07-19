@@ -19,9 +19,10 @@
                                     <h3 class="font-weight-medium text-lg">Data Help Desk</h3>
                                     <div class="d-flex align-items-center" style="gap: 3px">
                                         @if ($permissions['tambah'])
-                                            <button class="btn btn-primary btn-sm" data-toggle="modal"
-                                                data-target="#modalForm"><i class="fas fa-plus"></i>
-                                                Tambah Help Desk</button>
+                                        <a href="{{ route('helpdesk.create') }}" class="btn btn-primary btn-sm">
+                                            <i class="fas fa-plus"></i> Tambah Help Desk
+                                        </a>
+                                        
                                         @endif
 
                                         <button type="button" class="btn border px-3 py-1 btn-xs" onclick="reloadTable()">
@@ -35,7 +36,7 @@
                                 <table class="table table-bordered table-striped data-table">
                                     <thead>
                                         <tr>
-                                            <th>No</th>
+                                            <th width="5%">No</th>
                                             <th>Project</th>
                                             <th>Tgl Komplain</th>
                                             <th>Tgl Target Selesai</th>
@@ -65,7 +66,7 @@
     </div>
 
     <!-- Modal -->
-    <div class="modal fade" id="modalForm" tabindex="-1" role="dialog" aria-labelledby="modalFormLabel" aria-hidden="true"
+    {{-- <div class="modal fade" id="modalForm" tabindex="-1" role="dialog" aria-labelledby="modalFormLabel" aria-hidden="true"
         data-backdrop="static" data-keyboard="false">
         <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content">
@@ -160,15 +161,14 @@
                 </form>
             </div>
         </div>
-    </div>
+    </div> --}}
 @endsection
 @push('scripts')
     <script>
         window.permissions = @json($permissions);
         window.routes = {
-            index: "{{ route('helpdesk.index') }}",
-            store: "{{ route('helpdesk.store') }}",
-            update: "{{ route('helpdesk.update', ['helpdesk' => ':id']) }}",
+            index: "{{ route('helpdesk.index') }}"
+           
         };
     </script>
     <script src="{{ asset('js/admin/helpDesk.js') }}"></script>

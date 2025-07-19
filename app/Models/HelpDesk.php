@@ -19,6 +19,11 @@ class HelpDesk extends Model
         'catatan_penanggung_jawab'
     ];
 
+    protected $casts = [
+        'deskripsi_komplen' => 'array',
+    ];
+    
+
     public $timestamps = false;
 
     public function project()

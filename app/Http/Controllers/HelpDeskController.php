@@ -25,7 +25,8 @@ class HelpDeskController extends Controller
 
                     $btn = '<div class="d-flex justify-content-center">';
                     if ($permissions['edit']) {
-                        $btn .= '<button class="btn btn-primary btn-xs mx-1" data-id="' . $row->id . '" data-url="' . $editUrl . '" data-toggle="modal" data-target="#modalForm" id="edit-button">Edit</button>';
+                        $btn .= '<a href="' . $editUrl . '" class="btn btn-primary btn-xs mx-1">Edit</a>';
+
                     }
                     if ($permissions['hapus']) {
                         $btn .= '<form action="' . $deleteUrl . '" method="POST" style="display:inline;">' .
@@ -49,7 +50,7 @@ class HelpDeskController extends Controller
             'id_project' => 'required',
             'tgl_komplen' => 'required|date',
             'tgl_target_selesai' => 'required|date',
-            'deskripsi_komplen' => 'required',
+            'deskripsi_komplen' => 'required|array',
             'penanggung_jawab' => 'required',
             'status_komplen' => 'required|in:open,progress,closed',
         ], [
@@ -68,34 +69,49 @@ class HelpDeskController extends Controller
 
     public function edit(HelpDesk $helpdesk)
     {
+        $dataProject = Project::all();
         $helpdesk->load('project');
-
-        return response()->json([
-            'status' => 'success',
-            'data' => $helpdesk,
-        ]);
+        return view('admin.help_desk.edit', compact('helpdesk', 'dataProject'));
     }
+
 
 
     public function update(Request $request, HelpDesk $helpdesk)
-    {
-        $request->validate([
-            'id_project' => 'required',
-            'tgl_komplen' => 'required|date',
-            'tgl_target_selesai' => 'required|date',
-            'deskripsi_komplen' => 'required',
-            'penanggung_jawab' => 'required',
-            'status_komplen' => 'required|in:open,progress,closed',
-        ]);
+{
+    $request->validate([
+        'tgl_komplen' => 'required|date',
+        'id_project' => 'required|exists:project,id',
+        'deskripsi_komplen' => 'required|array',
+        'penanggung_jawab' => 'required|string',
+        'status_komplen' => 'required|in:open,progress,closed',
+        'tgl_target_selesai' => 'required|date',
+    ]);
 
-        $helpdesk->update($request->all());
+    $helpdesk->update([
+        'tgl_komplen' => $request->tgl_komplen,
+        'id_project' => $request->id_project,
+        'deskripsi_komplen' => $request->deskripsi_komplen,
+        'penanggung_jawab' => $request->penanggung_jawab,
+        'status_komplen' => $request->status_komplen,
+        'catatan_penanggung_jawab' => $request->catatan_penanggung_jawab,
+        'tgl_target_selesai' => $request->tgl_target_selesai,
+    ]);
 
-        return response()->json(['status' => 'success']);
-    }
+    return response()->json(['status' => 'success']);
+}
+
 
     public function destroy(HelpDesk $helpdesk)
     {
         $helpdesk->delete();
         return response()->json(['status' => 'success']);
+    }
+
+
+    public function create(Request $request)
+    {
+        
+        $dataProject = Project::all();
+        return view('admin.help_desk.create', compact( 'dataProject'));
     }
 }

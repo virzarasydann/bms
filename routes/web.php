@@ -19,7 +19,7 @@ use App\Http\Controllers\PengeluaranController;
 use App\Http\Controllers\HutangController;
 use App\Http\Controllers\MutasiSaldoController;
 use App\Http\Controllers\DataAkunController;
-
+use App\Http\Controllers\LaporanArusKasController;
 Route::get('/', function () {
     if (Auth::check()) {
         return redirect()->route('dashboard');
@@ -40,6 +40,7 @@ Route::middleware('auth')->prefix('admin')->group(function () {
 
     Route::controller(DashboardController::class)->group(function () {
         Route::get('/dashboard', 'dashboard')->name('dashboard');
+        Route::get('/dashboard/project/{project}', 'detail')->name('dashboard.project.detail');
     });
 
     Route::resource('customer', CustomerController::class);
@@ -56,6 +57,12 @@ Route::middleware('auth')->prefix('admin')->group(function () {
     Route::resource('hutang', HutangController::class);
     Route::resource('mutasi', MutasiSaldoController::class);
     Route::resource('akun', DataAkunController::class);
+    Route::prefix('laporan')->name('laporan.')->group(function () {
+        Route::get('arus-kas', [LaporanArusKasController::class, 'index'])->name('aruskas.index');
+        Route::get('arus-kas/pdf', [LaporanArusKasController::class, 'exportPdf'])->name('aruskas.export.pdf');
+        Route::get('arus-kas/excel', [LaporanArusKasController::class, 'exportExcel'])->name('aruskas.export.excel');
+    });
+    
 
     Route::post('admin/logout', [AuthController::class, 'logout'])->name('admin.logout');
     Route::get('admin/hak-akses', [HakAksesController::class, 'hak_akses'])->name('hakakses');

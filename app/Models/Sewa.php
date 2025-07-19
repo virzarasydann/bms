@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Models;
-
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 
 class Sewa extends Model
@@ -25,5 +25,14 @@ class Sewa extends Model
     public function kategori()
     {
         return $this->belongsTo(KategoriSewa::class, 'id_kategori_sewa');
+    }
+
+
+    public function scopeExpiringSoon($query)
+    {
+        $today = Carbon::today();
+        $limit = Carbon::today()->addDays(50);
+
+        return $query->whereBetween('tgl_expired', [$today, $limit]);
     }
 }

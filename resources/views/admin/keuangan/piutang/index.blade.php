@@ -35,7 +35,7 @@
                                 <table class="table table-bordered table-striped data-table">
                                     <thead>
                                         <tr>
-                                            <th>No</th>
+                                            <th width="5%">No</th>
                                             <th>Tanggal Piutang</th>
                                             <th width="250px">Deskripsi</th>
                                             <th>Nominal</th>

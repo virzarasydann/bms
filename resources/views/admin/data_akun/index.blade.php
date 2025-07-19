@@ -35,7 +35,7 @@
                                 <table class="table table-bordered table-striped data-table">
                                     <thead>
                                         <tr>
-                                            <th>No</th>
+                                            <th width="5%">No</th>
                                             <th>Nama Akun</th>
                                             <th>User Id</th>
                                             <th width="100px">Action</th>
