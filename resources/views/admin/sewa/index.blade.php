@@ -39,7 +39,7 @@
                                             <th>Kategori Sewa</th>
                                             <th>Nama Layanan</th>
                                             <th>Email</th>
-                                            
+
                                             <th>Tanggal Sewa</th>
                                             <th>Tanggal Expired</th>
                                             <th>Vendor</th>
@@ -68,7 +68,7 @@
         data-backdrop="static" data-keyboard="false">
         <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content">
-                <div class="modal-header">
+                <div class="modal-header bg-warning">
                     <h5 class="modal-title" id="modalFormLabel">Form Data</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
@@ -148,8 +148,8 @@
                     </div>
 
                     <div class="modal-footer">
-                        <button type="submit" id="submitBtn" class="btn btn-primary">Simpan</button>
                         <button type="button" class="btn btn-danger" data-dismiss="modal">Batal</button>
+                        <button type="submit" id="submitBtn" class="btn btn-primary">Simpan</button>
                     </div>
                 </form>
             </div>

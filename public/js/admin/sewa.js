@@ -18,7 +18,7 @@ class SewaModule {
     initSelect2() {
         $('.select2').select2({
             theme: 'bootstrap4',
-            placeholder: '-- Pilih --',
+            placeholder: 'Pilih Kategori',
             allowClear: false,
             dropdownParent: $('#modalForm')
         });
@@ -29,7 +29,7 @@ class SewaModule {
             processing: true,
             serverSide: true,
             responsive: true,
-            
+
             ajax: window.routes.index,
             ordering: false,
             columns: [
@@ -134,15 +134,15 @@ class SewaModule {
                         url: form.attr('action'),
                         method: 'POST',
                         data: form.serialize(),
-                        success: () => {
+                        success: function () {
                             toastr.success("Data telah dihapus!", "BERHASIL", {
                                 progressBar: true,
                                 timeOut: 3500,
                                 positionClass: "toast-bottom-right",
                             });
-                            this.table.ajax.reload();
+                            self.reloadTable();
                         },
-                        error: () => {
+                        error: function () {
                             toastr.error("Gagal menghapus data.", "GAGAL!", {
                                 progressBar: true,
                                 timeOut: 3500,

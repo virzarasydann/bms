@@ -7,17 +7,25 @@ use App\Models\KategoriSewa;
 use Illuminate\Http\Request;
 use Yajra\DataTables\DataTables;
 use App\Http\Controllers\HakAksesController;
+use Carbon\Carbon;
 
 class SewaController extends Controller
 {
     public function index(Request $request)
     {
         $permissions = HakAksesController::getUserPermissions();
+          Carbon::setLocale('id');
 
         if ($request->ajax()) {
             $data = Sewa::with('kategori')->orderBy('id', 'desc');
             return DataTables::of($data)
                 ->addIndexColumn()
+                ->addColumn('tgl_expired', fn($row) =>
+                    Carbon::parse($row->tgl_expired)->translatedFormat('d F Y')
+                )
+                ->addColumn('tgl_sewa', fn($row) =>
+                    Carbon::parse($row->tgl_sewa)->translatedFormat('d F Y')
+                )
                 ->addColumn('kategori', fn($row) => $row->kategori->jenis_sewa ?? '-')
                 ->addColumn('action', function ($row) use ($permissions) {
                     $editUrl = route('sewa.edit', $row->id);
@@ -28,7 +36,7 @@ class SewaController extends Controller
                     }
                     if ($permissions['hapus']) {
                         $btn .= '<form action="' . e($deleteUrl) . '" method="POST" style="display:inline;">'
-                            . csrf_field() . method_field('DELETE') . 
+                            . csrf_field() . method_field('DELETE') .
                             '<button type="submit" class="delete-button btn btn-danger btn-xs mx-1">Hapus</button></form>';
                     }
                     $btn .= '</div>';
