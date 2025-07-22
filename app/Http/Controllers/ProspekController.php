@@ -120,10 +120,14 @@ public function update(Request $request, $id)
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Prospek $customer)
-    {
-        $customer->delete();
+  public function destroy(Prospek $prospek)
+{
+    $prospek->delete();
 
-        return response()->json(['status' => 'success']);
-    }
+    return response()->json([
+        'status' => 'success',
+        'message' => 'Data berhasil dihapus.'
+    ]);
+}
+
 }

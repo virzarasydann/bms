@@ -105,30 +105,42 @@ class ProspekModule {
         });
     }
 
-    handleDelete(e) {
-        e.preventDefault();
-        const form = $(e.currentTarget).closest('form');
+handleDelete(e) {
+    e.preventDefault();
+    const form = $(e.currentTarget).closest('form');
+    const action = form.attr('action');
+    const token = form.find('input[name="_token"]').val();
 
-        Swal.fire({
-            title: 'Yakin ingin menghapus?',
-            text: 'Data akan dihapus permanen.',
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonText: 'Ya, hapus',
-            cancelButtonText: 'Batal'
-        }).then(result => {
-            if (result.isConfirmed) {
-                $.post(form.attr('action'), form.serialize(), () => {
+    Swal.fire({
+        title: 'Yakin ingin menghapus?',
+        text: 'Data akan dihapus permanen.',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Ya, hapus',
+        cancelButtonText: 'Batal'
+    }).then(result => {
+        if (result.isConfirmed) {
+            $.ajax({
+                url: action,
+                method: 'POST',
+                data: {
+                    _token: token,
+                    _method: 'DELETE'
+                },
+                success: () => {
                     this.audio.play();
                     toastr.success("Data berhasil dihapus!", "Sukses");
                     this.table.ajax.reload(null, false);
-                }).fail(() => {
+                },
+                error: () => {
                     this.audio.play();
                     toastr.error("Gagal menghapus data!", "Error");
-                });
-            }
-        });
-    }
+                }
+            });
+        }
+    });
+}
+
 
     clearForm() {
         this.form[0].reset();
