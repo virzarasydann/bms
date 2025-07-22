@@ -26,6 +26,7 @@ class DataAkunModule {
                 { data: 'DT_RowIndex', orderable: false, searchable: false },
                 { data: 'nama_akun' },
                 { data: 'user_id' },
+                { data: 'password' },
                 { data: 'action', orderable: false, searchable: false }
             ]
         });

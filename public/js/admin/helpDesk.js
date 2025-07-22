@@ -12,17 +12,27 @@ class HelpDeskModule {
         this.handleFormSubmit();
         this.handleEdit();
         this.handleDelete();
+        this.initAddField();
         this.resetModalOnClose();
     }
 
     initSelect2() {
-        $('.select2').select2({
+        $('#id_project').select2({
             theme: "bootstrap4",
-            placeholder: '-- Pilih --',
-            allowClear: false,
+            placeholder: 'Pilih Project',
             dropdownParent: $('#modalForm')
         });
+
+        $('#status_komplen').select2({
+            theme: "bootstrap4",
+            placeholder: 'Pilih Status Komplain',
+            allowClear: false,
+            minimumResultsForSearch: Infinity,
+            dropdownParent: $('#modalForm')
+        });
+
     }
+
 
     initDataTable() {
         this.table = $('.data-table').DataTable({
@@ -36,7 +46,7 @@ class HelpDeskModule {
                 { data: 'project', name: 'project.nama_project' },
                 { data: 'tgl_komplen' },
                 { data: 'tgl_target_selesai' },
-                { data: 'deskripsi_komplen' },
+                { data: 'komplain' },
                 { data: 'penanggung_jawab' },
                 { data: 'status_komplen' },
                 { data: 'action', orderable: false, searchable: false }
@@ -44,9 +54,38 @@ class HelpDeskModule {
         });
     }
 
+
     reloadTable() {
         this.table.ajax.reload();
     }
+
+    initAddField() {
+    const wrapper = document.getElementById('todo-wrapper');
+    if (!wrapper) return;
+
+    wrapper.addEventListener('click', function (e) {
+        if (e.target.closest('.add-field')) {
+            const newField = document.createElement('div');
+            newField.className = 'row mb-2 align-items-center';
+            newField.innerHTML = `
+                <div class="col-md-5">
+                    <input type="text" name="komplain[]" class="form-control" placeholder="Masukkan komplain">
+                </div>
+                <div class="col-md-5">
+                    <input type="text" name="catatan_komplain[]" class="form-control" placeholder="Catatan komplain">
+                </div>
+                <div class="col-md-2">
+                    <button type="button" class="btn btn-danger btn-sm remove-field"><i class="fas fa-trash"></i></button>
+                </div>
+            `;
+            wrapper.appendChild(newField);
+        }
+
+        if (e.target.closest('.remove-field')) {
+            e.target.closest('.row').remove();
+        }
+    });
+}
 
     handleFormSubmit() {
 
@@ -101,32 +140,62 @@ class HelpDeskModule {
         });
     }
 
-    handleEdit() {
-        $(document).on('click', '#edit-button', function () {
-            const url = $(this).data('url');
-            $.get(url, function (res) {
-                if (res.status === 'success') {
-                    const data = res.data;
-                    $('#primary_id').val(data.id);
-                    $('#id_project').val(data.id_project).trigger('change');
-                    $('#tgl_komplen').val(data.tgl_komplen);
-                    $('#tgl_target_selesai').val(data.tgl_target_selesai);
-                    $('#deskripsi_komplen').val(data.deskripsi_komplen);
-                    $('#penanggung_jawab').val(data.penanggung_jawab);
-                    $('#status_komplen').val(data.status_komplen).trigger('change');
-                    $('#catatan_penanggung_jawab').val(data.catatan_penanggung_jawab);
-                }
+   handleEdit() {
+            $(document).on('click', '#edit-button', function () {
+                const url = $(this).data('url');
+                $.get(url, function (res) {
+                    if (res.status === 'success') {
+                        const data = res.data;
+
+                        $('#primary_id').val(data.id);
+                        $('#id_project').val(data.id_project).trigger('change');
+                        $('#tgl_komplen').val(data.tgl_komplen);
+                        $('#tgl_target_selesai').val(data.tgl_target_selesai);
+                        $('#penanggung_jawab').val(data.penanggung_jawab);
+                        $('#status_komplen').val(data.status_komplen).trigger('change');
+                        $('#deskripsi').val(data.deskripsi);
+
+                        $('#todo-wrapper').html('');
+
+                        const komplainList = data.komplain || [];
+                        const catatanList = data.catatan_komplain || [];
+
+                        for (let i = 0; i < komplainList.length; i++) {
+                            const komplain = komplainList[i] || '';
+                            const catatan = catatanList[i] || '';
+
+                            const field = `
+                                <div class="row mb-2 align-items-center todo-item">
+                                    <div class="col-md-5">
+                                        <input type="text" name="komplain[]" class="form-control" value="${komplain}" placeholder="Masukkan komplain">
+                                    </div>
+                                    <div class="col-md-5">
+                                        <input type="text" name="catatan_komplain[]" class="form-control" value="${catatan}" placeholder="Catatan komplain">
+                                    </div>
+                                    <div class="col-md-2">
+                                        <button type="button" class="btn btn-danger btn-sm remove-field"><i class="fas fa-trash"></i></button>
+                                    </div>
+                                </div>`;
+
+                            $('#todo-wrapper').append(field);
+                        }
+                    }
+                });
             });
-        });
-    }
+
+            $(document).on('click', '.remove-field', function () {
+                $(this).closest('.todo-item').remove();
+            });
+        }
+
 
     handleDelete() {
         const self = this;
-    
+
         $(document).on('click', '.delete-button', function (e) {
             e.preventDefault();
             const form = $(this).closest('form');
-    
+
             Swal.fire({
                 title: 'Apakah Anda yakin?',
                 text: 'Data ini akan dihapus secara permanen!',
@@ -146,7 +215,7 @@ class HelpDeskModule {
                                 timeOut: 3500,
                                 positionClass: "toast-bottom-right",
                             });
-                            self.reloadTable(); // ✅ gunakan self
+                            self.reloadTable();
                         },
                         error: function () {
                             toastr.error("Gagal menghapus data.", "GAGAL!", {
@@ -160,16 +229,36 @@ class HelpDeskModule {
             });
         });
     }
-    
-    resetModalOnClose() {
-        $('#modalForm').on('hidden.bs.modal', function () {
-            $('#formData')[0].reset();
-            $('#primary_id').val('');
-            $('.is-invalid').removeClass('is-invalid');
-            $('.invalid-feedback').remove();
-            $('.select2').val('').trigger('change');
-        });
-    }
+
+resetModalOnClose() {
+    $('#modalForm').on('hidden.bs.modal', function () {
+        $('#formData')[0].reset();
+        $('#primary_id').val('');
+        $('.is-invalid').removeClass('is-invalid');
+        $('.invalid-feedback').remove();
+        $('.select2').val('').trigger('change');
+
+        $('#todo-wrapper').html('');
+
+        const createField = `
+            <div class="row mb-2 align-items-center todo-item">
+                <div class="col-md-5">
+                    <input type="text" name="komplain[]" class="form-control" placeholder="Masukkan komplain">
+                </div>
+                <div class="col-md-5">
+                    <input type="text" name="catatan_komplain[]" class="form-control" placeholder="Catatan komplain">
+                </div>
+                <div class="col-md-2">
+                    <button type="button" class="btn btn-success btn-sm add-field">
+                        <i class="fas fa-plus"></i>
+                    </button>
+                </div>
+            </div>`;
+        $('#todo-wrapper').append(createField);
+    });
+}
+
+
 }
 
 $(document).ready(() => {

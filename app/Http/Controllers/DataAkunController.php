@@ -49,23 +49,19 @@ class DataAkunController extends Controller
     return view('admin.data_akun.index', compact('permissions'));
 }
 
-    public function create()
-    {
-        return view('data_akun.create');
-    }
 
     public function store(Request $request)
     {
         $request->validate([
             'nama_akun' => 'required|string|max:100',
             'user_id' => 'required|string|max:100',
-            'password' => 'required|string|min:6',
+            'password' => 'required|string',
         ]);
 
         DataAkun::create([
             'nama_akun' => $request->nama_akun,
             'user_id' => $request->user_id,
-            'password' => Hash::make($request->password), // hash untuk keamanan
+            'password' => $request->password,
         ]);
 
         return response()->json(['status' => 'success']);
@@ -89,9 +85,8 @@ class DataAkunController extends Controller
         $akun->nama_akun = $request->nama_akun;
         $akun->user_id = $request->user_id;
 
-        // Update password hanya jika diisi
         if ($request->filled('password')) {
-            $akun->password = Hash::make($request->password);
+            $akun->password = $request->password;
         }
 
         $akun->save();

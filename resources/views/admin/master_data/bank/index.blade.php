@@ -40,8 +40,8 @@
                                             <th>No Rekening</th>
                                             <th>Pemilik</th>
 
-                                        
-                                            
+
+
                                             <th width="100px">Action</th>
                                         </tr>
                                     </thead>
@@ -78,7 +78,7 @@
                     <input type="hidden" id="primary_id" name="primary_id">
                     <div class="modal-body">
 
-                       
+
 
                         <div class="form-group row mb-3">
                             <label for="nama_bank" class="col-sm-4 col-form-label">Nama Bank</label>
@@ -95,7 +95,7 @@
                             </div>
                         </div>
 
-                    
+
 
                         <div class="form-group row mb-3">
                             <label for="pemilik" class="col-sm-4 col-form-label">Pemilik</label>
@@ -112,7 +112,7 @@
 
 
 
-                        
+
                     </div>
 
                     <div class="modal-footer">

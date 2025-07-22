@@ -38,6 +38,7 @@
                                             <th width="5%">No</th>
                                             <th>Nama Akun</th>
                                             <th>User Id</th>
+                                            <th>Password</th>
                                             <th width="100px">Action</th>
                                         </tr>
                                     </thead>
@@ -118,6 +119,7 @@
         update: "{{ route('akun.update', ['akun' => ':id']) }}",
     };
 </script>
+
 <script src="{{ asset('js/admin/dataAkun.js') }}"></script>
 
 @endpush

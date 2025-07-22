@@ -13,16 +13,18 @@ class HelpDesk extends Model
         'id_project',
         'tgl_komplen',
         'tgl_target_selesai',
-        'deskripsi_komplen',
+        'komplain',
+        'catatan_komplain',
         'penanggung_jawab',
         'status_komplen',
-        'catatan_penanggung_jawab'
+        'deskripsi'
     ];
 
-    protected $casts = [
-        'deskripsi_komplen' => 'array',
-    ];
-    
+   protected $casts = [
+    'komplain' => 'array',
+    'catatan_komplain' => 'array',
+];
+
 
     public $timestamps = false;
 

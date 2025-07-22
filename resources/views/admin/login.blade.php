@@ -70,7 +70,7 @@
 }
 
 .btn-login:hover {
-    background: linear-gradient(to right, #961e1e, #c02222); /* Gradasi saat hover */
+    background: linear-gradient(to right, #1e71ff, #1a6af3); /* Gradasi saat hover */
     color: white;
 }
 
