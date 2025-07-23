@@ -16,7 +16,7 @@ use Illuminate\Support\Facades\DB;
 
 class ProjectController extends Controller
 {
-    
+
     public function index(Request $request)
     {
         $permissions = HakAksesController::getUserPermissions();
@@ -62,7 +62,7 @@ class ProjectController extends Controller
 {
     $request->merge([
         'nilai_project' => str_replace('.', '', $request->nilai_project),
-        
+
     ]);
     $request->validate([
         'id_kategori_project' => 'required',
@@ -83,10 +83,10 @@ class ProjectController extends Controller
         'penanggung_jawab.required' => 'Penanggung jawab wajib diisi.',
         'status_pembayaran.required' => 'Status pembayaran wajib dipilih.'
     ]);
-    
+
     $project = [];
 
-   
+
     if ($request->status_pembayaran === 'Paid') {
         $project = Project::create($request->all());
         Pemasukan::create([
@@ -94,9 +94,9 @@ class ProjectController extends Controller
             'id_hutang' => 0,
             'id_piutang' => 0,
             'tanggal' => now()->format('Y-m-d'),
-            'id_bank' => $request->id_bank, 
+            'id_bank' => $request->id_bank,
             'nominal' => $request->nilai_project,
-            'id_kategori_transaksi' => 0, 
+            'id_kategori_transaksi' => 0,
             'keterangan' => 'Pemasukan dari project ' . $project->nama_project,
         ]);
     }
@@ -115,14 +115,14 @@ class ProjectController extends Controller
             'sisa_bayar' => $request->nilai_project,
         ]);
     }
-    
+
     if ($request->status_pembayaran === 'DP') {
         $project = Project::create($request->all());
         $request->merge([
             'nilai_dp' => str_replace('.', '', $request->nilai_dp),
         ]);
         $nilaiDP = $request->nilai_dp;
-    
+
         $piutang = Piutang::create([
             'id_project' => $project->id,
             'tanggal_piutang' => now(),
@@ -133,7 +133,7 @@ class ProjectController extends Controller
             'sisa_bayar' => $request->nilai_project - $nilaiDP,
             'status' => 'Belum Lunas',
         ]);
-    
+
         Pemasukan::create([
             'id_project' => $project->id,
             'id_piutang' => $piutang->id,
@@ -174,14 +174,14 @@ class ProjectController extends Controller
     public function update(Request $request, Project $project)
     {
         $request->validate([
-            'id_kategori_project' => 'required|exists:kategori_project,id',
-            'nama_project' => 'required|string|max:255',
-            'id_customer' => 'required|exists:customer,id',
-            'tgl_kontrak' => 'required|date',
-            'tanggal_selesai' => 'required|date',
-            'nilai_project' => 'required|numeric|min:0',
+            'id_kategori_project' => 'nullable|exists:kategori_project,id',
+            'nama_project' => 'nullable|string|max:255',
+            'id_customer' => 'nullable|exists:customer,id',
+            'tgl_kontrak' => 'nullable|date',
+            'tanggal_selesai' => 'nullable|date',
+            'nilai_project' => 'nullable|numeric|min:0',
             'penanggung_jawab' => 'required|string|max:255',
-            'status_pembayaran' => 'required',
+            'status_pembayaran' => 'nullable',
         ]);
 
         $project->update($request->all());
