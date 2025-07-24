@@ -36,8 +36,8 @@
                                     <thead>
                                         <tr>
                                             <th width="5%">No</th>
-                                            <th>Tgl Komplain</th>
                                             <th>Project</th>
+                                            <th>Tgl Komplain</th>
                                             <th>Tgl Target Selesai</th>
                                             <th>Komplain</th>
                                             <th>Penanggung jawab</th>
