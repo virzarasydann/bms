@@ -122,7 +122,7 @@
                                             <tr>
                                                 <td>{{ $index + 1 }}</td>
                                                 <td>{{ $project->nama_project }}</td>
-                                                <td>{{ $project->tanggal_selesai }}</td>
+                                                <td>{{ \Carbon\Carbon::parse($project->tanggal_selesai)->translatedFormat('d - F - Y') }}</td>
                                                 <td>
                                                     <a href="{{ route('dashboard.project.detail', $project->id) }}"
                                                         class="btn btn-sm btn-primary">
@@ -159,8 +159,21 @@
                                             <tr>
                                                 <td>{{ $index + 1 }}</td>
                                                 <td>{{ $helpdesk->project->nama_project ?? '-' }}</td>
-                                                <td>{{ $helpdesk->status_komplen }}</td>
-                                                {{-- <td>{{ $helpdesk->deskripsi_komplen }}</td> --}}
+                                                <td>
+                                                @php
+                                                    $status = strtolower($helpdesk->status_komplen);
+                                                    $badgeClass = match ($status) {
+                                                        'open' => 'primary',
+                                                        'progress' => 'success',
+                                                        'close' => 'danger',
+                                                        default => 'secondary',
+                                                    };
+                                                @endphp
+                                                <span class="badge bg-{{ $badgeClass }}">
+                                                    {{ ucfirst($helpdesk->status_komplen) }}
+                                                </span>
+                                            </td>
+
                                             </tr>
                                         @endforeach
                                     </tbody>
@@ -195,7 +208,7 @@
                                                 <tr>
                                                     <td>{{ $index + 1 }}</td>
                                                     <td>{{ $sewa->nama_layanan ?? '-' }}</td>
-                                                    <td>{{ $sewa->tgl_expired }}</td>
+                                                     <td>{{ \Carbon\Carbon::parse($sewa->tgl_expired)->translatedFormat('d - F - Y') }}</td>
                                                 </tr>
                                             @endforeach
                                         @endif

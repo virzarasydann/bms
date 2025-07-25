@@ -42,6 +42,9 @@ Route::middleware('auth')->prefix('admin')->group(function () {
     Route::controller(DashboardController::class)->group(function () {
         Route::get('/dashboard', 'dashboard')->name('dashboard');
         Route::get('/dashboard/project/{project}', 'detail')->name('dashboard.project.detail');
+        Route::post('/pembayaran/store', 'storePembayaran')->name('pembayaran.store');
+        Route::post('/progres/store', 'storeProgres')->name('progres.store');
+
     });
 
     Route::resource('prospek', ProspekController::class);
